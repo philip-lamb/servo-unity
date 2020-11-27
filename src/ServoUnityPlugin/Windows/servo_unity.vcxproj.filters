@@ -56,10 +56,10 @@
     <ClInclude Include="..\servo_unity_internal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\simpleservo.h">
+    <ClInclude Include="..\utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\utils.h">
+    <ClInclude Include="..\simpleservo2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

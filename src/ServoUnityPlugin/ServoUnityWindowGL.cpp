@@ -749,6 +749,7 @@ void ServoUnityWindowGL::show_context_menu(const char *title, const char *const 
 
 void ServoUnityWindowGL::on_log_output(const char *buffer, uint32_t buffer_length)
 {
+	OutputDebugStringA(buffer);
     SERVOUNITYLOGi("servo callback on_log_output: %s\n", buffer);
 }
 

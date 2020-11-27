@@ -20,7 +20,7 @@
 #include <deque>
 #include <functional>
 #include <mutex>
-#include "simpleservo.h"
+#include "simpleservo2.h"
 
 class ServoUnityWindowGL : public ServoUnityWindow
 {

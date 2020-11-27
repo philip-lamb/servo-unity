@@ -184,7 +184,7 @@
     <ClInclude Include="..\servo_unity_c.h" />
     <ClInclude Include="..\ServoUnityWindowDX11.h" />
     <ClInclude Include="..\ServoUnityWindowGL.h" />
-    <ClInclude Include="..\simpleservo.h" />
+    <ClInclude Include="..\simpleservo2.h" />
     <ClInclude Include="..\utils.h" />
   </ItemGroup>
   <ItemGroup>

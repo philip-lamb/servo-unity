@@ -21,7 +21,7 @@
 #include <memory>
 #include <assert.h>
 #include <map>
-#include "simpleservo.h"
+#include "simpleservo2.h"
 #include "utils.h"
 
 //

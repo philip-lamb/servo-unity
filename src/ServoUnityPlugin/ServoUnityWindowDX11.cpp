@@ -37,11 +37,11 @@ ServoUnityWindowDX11::ServoUnityWindowDX11(int uid, int uidExt, Size size) :
 	m_servoTexHandle(nullptr),
 	m_size(size),
 	m_format(ServoUnityTextureFormat_Invalid),
-    m_unityTexPtr(nullptr),
-    m_windowCreatedCallback(nullptr),
-    m_windowResizedCallback(nullptr),
-    m_browserEventCallback(nullptr)
+    m_unityTexPtr(nullptr)
 {
+}
+
+ServoUnityWindowDX11::~ServoUnityWindowDX11() {
 }
 
 static int getServoUnityTextureFormatForDXGIFormat(DXGI_FORMAT format)
@@ -74,11 +74,9 @@ static int getServoUnityTextureFormatForDXGIFormat(DXGI_FORMAT format)
 
 bool ServoUnityWindowDX11::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback)
 {
-    m_windowCreatedCallback = windowCreatedCallback;
-    m_windowResizedCallback = windowResizedCallback;
-    m_browserEventCallback = browserEventCallback;
-    // TODO: If Servo ever supports DirectX, we'd need to add a means
-	// to get Servo's texture handle into m_servoTexHandle.
+    if (!ServoUnityWindow::init(windowCreatedCallback, windowResizedCallback, browserEventCallback)) return false;
+    
+    // TODO: Get Servo texture handle into m_servoTexHandle.
     if (!m_servoTexHandle) {
 		SERVOUNITYLOGe("Error: Servo texture handle is null.\n");
 		return false;
@@ -101,9 +99,6 @@ bool ServoUnityWindowDX11::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback,
     return true;
 }
 
-ServoUnityWindowDX11::~ServoUnityWindowDX11() {
-}
-
 ServoUnityWindow::Size ServoUnityWindowDX11::size() {
 	return m_size;
 }
@@ -122,7 +117,16 @@ void* ServoUnityWindowDX11::nativePtr() {
 	return m_unityTexPtr;
 }
 
+void ServoUnityWindowGL::initRenderer(CInitOptions cio, void (*wakeup)(void), CHostCallbacks chc) {
+    // init_with_gl will capture the active GL context for later use by fill_gl_texture.
+    // This will be the Unity GL context.
+    init_with_egl(cio, wakeup, chc);
+}
+
 void ServoUnityWindowDX11::requestUpdate(float timeDelta) {
+    SERVOUNITYLOGd("ServoUnityWindowDX11::requestUpdate(%f)\n", timeDelta);
+
+    ServoUnityWindow::requestUpdate(timeDelta);
 
 	if (!m_servoTexPtr || !m_unityTexPtr) {
 		SERVOUNITYLOGi("ServoUnityWindowDX11::requestUpdate() m_servoTexPtr=%p, m_unityTexPtr=%p.\n", m_servoTexPtr, m_unityTexPtr);
@@ -145,34 +149,6 @@ void ServoUnityWindowDX11::requestUpdate(float timeDelta) {
 	}
 
 	ctx->Release();
-}
-
-void ServoUnityWindowDX11::pointerEnter() {
-	SERVOUNITYLOGd("ServoUnityWindowDX11::pointerEnter()\n");
-}
-
-void ServoUnityWindowDX11::pointerExit() {
-	SERVOUNITYLOGd("ServoUnityWindowDX11::pointerExit()\n");
-}
-
-void ServoUnityWindowDX11::pointerOver(int x, int y) {
-	SERVOUNITYLOGi("ServoUnityWindowDX11::pointerOver(%d, %d)\n", x, y);
-}
-
-void ServoUnityWindowDX11::pointerPress(int button, int x, int y) {
-	SERVOUNITYLOGd("ServoUnityWindowDX11::pointerPress(%d, %d, %d)\n", button, x, y);
-}
-
-void ServoUnityWindowDX11::pointerRelease(int button, int x, int y) {
-	SERVOUNITYLOGd("ServoUnityWindowDX11::pointerRelease(%d, %d, %d)\n", button, x, y);
-}
-
-void ServoUnityWindowDX11::pointerClick(int button, int x, int y) {
-    SERVOUNITYLOGd("ServoUnityWindowDX11::pointerClick(%d, %d, %d)\n", button, x, y);
-}
-
-void ServoUnityWindowDX11::pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y) {
-	SERVOUNITYLOGd("ServoUnityWindowDX11::pointerScrollDiscrete(%d, %d, %d, %d)\n", x_scroll, y_scroll, x, y);
 }
 
 #endif // SUPPORT_D3D11

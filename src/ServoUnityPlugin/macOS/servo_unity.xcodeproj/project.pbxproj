@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4A060D612581E4000071B40E /* ServoUnityWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A060D602581E4000071B40E /* ServoUnityWindow.cpp */; };
 		4A49CC1624690FC400B77CCA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A49CC1524690FC400B77CCA /* OpenGL.framework */; };
 		4A92A8172464FBE000E47295 /* ServoUnityWindowDX11.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8102464FBE000E47295 /* ServoUnityWindowDX11.cpp */; };
 		4A92A8182464FBE000E47295 /* servo_unity_log.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8112464FBE000E47295 /* servo_unity_log.c */; };
@@ -14,11 +15,11 @@
 		4A92A81A2464FBE000E47295 /* servo_unity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8142464FBE000E47295 /* servo_unity.cpp */; };
 		4A94C56E24BFAA5500BA301C /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A94C56D24BFAA5500BA301C /* utils.c */; };
 		4A9AA0F724A5D584001948F6 /* libsimpleservo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A64971924A2E2AC006447CA /* libsimpleservo2.dylib */; };
-		4AE52CA024CA8F6A0060E44A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4AE52C9F24CA8F6A0060E44A /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4A33AC0F247DFEFC00915C58 /* simpleservo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = simpleservo.h; path = ../simpleservo.h; sourceTree = "<group>"; };
+		4A060D602581E4000071B40E /* ServoUnityWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ServoUnityWindow.cpp; path = ../ServoUnityWindow.cpp; sourceTree = "<group>"; };
+		4A33AC0F247DFEFC00915C58 /* simpleservo2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = simpleservo2.h; path = ../simpleservo2.h; sourceTree = "<group>"; };
 		4A49CC1524690FC400B77CCA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		4A609D0524C559060079D8A1 /* servo_unity_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = servo_unity_internal.h; path = ../servo_unity_internal.h; sourceTree = "<group>"; };
 		4A64971924A2E2AC006447CA /* libsimpleservo2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsimpleservo2.dylib; path = ../../ServoUnity/Assets/Plugins/libsimpleservo2.dylib; sourceTree = "<group>"; };
@@ -68,13 +69,14 @@
 				4A609D0524C559060079D8A1 /* servo_unity_internal.h */,
 				4A92A8142464FBE000E47295 /* servo_unity.cpp */,
 				4A92A80F2464FBE000E47295 /* ServoUnityWindow.h */,
+				4A060D602581E4000071B40E /* ServoUnityWindow.cpp */,
 				4A92A8152464FBE000E47295 /* ServoUnityWindowDX11.h */,
 				4A92A8102464FBE000E47295 /* ServoUnityWindowDX11.cpp */,
 				4A92A8132464FBE000E47295 /* ServoUnityWindowGL.h */,
 				4A92A8122464FBE000E47295 /* ServoUnityWindowGL.cpp */,
 				4A92A80E2464FBE000E47295 /* servo_unity_log.h */,
 				4A92A8112464FBE000E47295 /* servo_unity_log.c */,
-				4A33AC0F247DFEFC00915C58 /* simpleservo.h */,
+				4A33AC0F247DFEFC00915C58 /* simpleservo2.h */,
 				4A94C56C24BFAA5500BA301C /* utils.h */,
 				4A94C56D24BFAA5500BA301C /* utils.c */,
 				4A92A8082464FB8400E47295 /* Info.plist */,
@@ -149,7 +151,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4AE52CA024CA8F6A0060E44A /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,6 +182,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A94C56E24BFAA5500BA301C /* utils.c in Sources */,
+				4A060D612581E4000071B40E /* ServoUnityWindow.cpp in Sources */,
 				4A92A81A2464FBE000E47295 /* servo_unity.cpp in Sources */,
 				4A92A8182464FBE000E47295 /* servo_unity_log.c in Sources */,
 				4A92A8172464FBE000E47295 /* ServoUnityWindowDX11.cpp in Sources */,

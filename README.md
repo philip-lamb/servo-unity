@@ -54,5 +54,15 @@ The plugin can run inside the Unity Editor, but some setup is required first:]
 1. At present, the plugin can be run and stopped once per Editor session. (This is due to the fact that Unity does not unload and reload native plugins between runs in the Editor.) You'll need to quit and relaunch the Editor before running again.
 2. The plugin currently looks for required GStreamer plugins at the same path as the executable; when running in the Unity Editor, this is unfortunately the path to the Unity Editor executable inside the Unity app bundle. We're working on fixing this, but in the meantime, prior to use, you'll need to navigate to the libsimpleservo2 binary folder, and execute the following command: `sudo cp libgstapp.so libgstlibav.so libgstvideoconvert.so libgstaudioconvert.so libgstmatroska.so libgstvideofilter.so libgstaudiofx.so libgstogg.so libgstvideoparsersbad.so libgstaudioparsers.so libgstopengl.so libgstvideoscale.so libgstaudioresample.so libgstopus.so libgstvolume.so libgstautodetect.so libgstplayback.so libgstvorbis.so libgstcoreelements.so libgstproxy.so libgstvpx.so libgstdeinterlace.so libgstrtp.so libgstwebrtc.so libgstinterleave.so libgsttheora.so libgstisomp4.so libgsttypefindfunctions.so "/Applications/Unity/Hub/Editor/2019.3.13f1/Unity.app/Contents/MacOS/"` You might need to amend the final path for a different version of the Unity Editor.
 
+## Debugging
 
+To launch with Rust debug logging, use this macOS script (Unity will inherit the environment from Unity Hub):
 
+```
+#!/bin/bash
+export RUST_BACKTRACE=1
+export RUST_LOG=debug
+nohup "/Applications/Unity Hub.app/Contents/MacOS/Unity Hub" &>/dev/null &
+```
+
+The Unity log, including plugin log output, Unity log, and stdout/stderr will be written to either `~/Library/Logs/Unity/Editor.log` or `~/Library/Logs/Mozilla/ServoUnity/Player.log`.

@@ -16,7 +16,7 @@
 
 #pragma once
 #include "ServoUnityWindow.h"
-#ifdef SUPPORT_D3D11
+#if SUPPORT_D3D11
 #include <cstdint>
 #include <string>
 #include <Windows.h>
@@ -50,38 +50,12 @@ public:
     RendererAPI rendererAPI() override {return RendererAPI::DirectX11;}
 	Size size() override;
 	void setSize(Size size) override;
+	int format() override { return m_format; }
 	void setNativePtr(void* texPtr) override;
 	void* nativePtr() override;
 
-    void serviceWindowEvents(void) override {}
-    std::string windowTitle(void) override {return std::string();}
-    std::string windowURL(void) override {return std::string();}
-
-	// Must be called from render thread.
 	void requestUpdate(float timeDelta) override;
-
-	// Must be called from render thread.
-	void cleanupRenderer() override {}
-
-	int format() override { return m_format; }
-
-    void CloseServoWindow() override {}
-	void pointerEnter() override;
-	void pointerExit() override;
-	void pointerOver(int x, int y) override;
-	void pointerPress(int button, int x, int y) override;
-	void pointerRelease(int button, int x, int y) override;
-	void pointerClick(int button, int x, int y) override;
-    void pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y) override;
-    void keyEvent(int upDown, int keyCode, int character) override {}
-
-    void refresh() override {}
-    void reload() override {}
-    void stop() override {}
-    void goBack() override {}
-    void goForward() override {}
-    void goHome() override {}
-    void navigate(const std::string& urlOrSearchString) override {}
+    void initRenderer(CInitOptions cio, void (*wakeup)(void), CHostCallbacks chc) override;
 };
 
 #endif // SUPPORT_D3D11

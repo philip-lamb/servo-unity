@@ -151,10 +151,6 @@ typedef struct {
 extern "C" {
 #endif // __cplusplus
 
-extern int32_t AmdPowerXpressRequestHighPerformance;
-
-extern int32_t NvOptimusEnablement;
-
 void change_visibility(bool visible);
 
 void clear_cache(void);

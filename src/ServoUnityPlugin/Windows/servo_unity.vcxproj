@@ -167,6 +167,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\depends\windows\include\gl3w\gl3w.c" />
+    <ClCompile Include="..\ServoUnityWindow.cpp" />
     <ClCompile Include="..\servo_unity_log.c" />
     <ClCompile Include="..\servo_unity.cpp" />
     <ClCompile Include="..\ServoUnityWindowDX11.cpp" />

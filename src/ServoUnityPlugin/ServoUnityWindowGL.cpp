@@ -47,12 +47,7 @@ ServoUnityWindowGL::ServoUnityWindowGL(int uid, int uidExt, Size size) :
 	ServoUnityWindow(uid, uidExt),
 	m_size(size),
 	m_texID(0),
-	m_buf(NULL),
 	m_format(ServoUnityTextureFormat_RGBA32), // Servo's default.
-	m_pixelIntFormatGL(0),
-	m_pixelFormatGL(0),
-	m_pixelTypeGL(0),
-	m_pixelSize(0),
     m_windowCreatedCallback(nullptr),
     m_windowResizedCallback(nullptr),
     m_browserEventCallback(nullptr),
@@ -66,10 +61,6 @@ ServoUnityWindowGL::ServoUnityWindowGL(int uid, int uidExt, Size size) :
 }
 
 ServoUnityWindowGL::~ServoUnityWindowGL() {
-	if (m_buf) {
-		free(m_buf);
-		m_buf = NULL;
-	}
 }
 
 bool ServoUnityWindowGL::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback)
@@ -77,67 +68,6 @@ bool ServoUnityWindowGL::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, P
     m_windowCreatedCallback = windowCreatedCallback;
     m_windowResizedCallback = windowResizedCallback;
     m_browserEventCallback = browserEventCallback;
-	switch (m_format) {
-		case ServoUnityTextureFormat_RGBA32:
-			m_pixelIntFormatGL = GL_RGBA;
-			m_pixelFormatGL = GL_RGBA;
-			m_pixelTypeGL = GL_UNSIGNED_BYTE;
-			m_pixelSize = 4;
-			break;
-		case ServoUnityTextureFormat_BGRA32:
-			m_pixelIntFormatGL = GL_RGBA;
-			m_pixelFormatGL = GL_BGRA;
-			m_pixelTypeGL = GL_UNSIGNED_BYTE;
-			m_pixelSize = 4;
-			break;
-		case ServoUnityTextureFormat_ARGB32:
-			m_pixelIntFormatGL = GL_RGBA;
-			m_pixelFormatGL = GL_BGRA;
-			m_pixelTypeGL = GL_UNSIGNED_INT_8_8_8_8; // GL_UNSIGNED_INT_8_8_8_8_REV on big-endian.
-			m_pixelSize = 4;
-			break;
-			//case ServoUnityTextureFormat_ABGR32: // Needs GL_EXT_abgr
-			//	m_pixelIntFormatGL = GL_RGBA;
-			//	m_pixelFormatGL = GL_ABGR_EXT;
-			//	m_pixelTypeGL = GL_UNSIGNED_BYTE;
-			//	m_pixelSize = 4;
-			//	break;
-		case ServoUnityTextureFormat_RGB24:
-			m_pixelIntFormatGL = GL_RGB;
-			m_pixelFormatGL = GL_RGB;
-			m_pixelTypeGL = GL_UNSIGNED_BYTE;
-			m_pixelSize = 3;
-			break;
-		case ServoUnityTextureFormat_BGR24:
-			m_pixelIntFormatGL = GL_RGBA;
-			m_pixelFormatGL = GL_BGR;
-			m_pixelTypeGL = GL_UNSIGNED_BYTE;
-			m_pixelSize = 3;
-			break;
-		case ServoUnityTextureFormat_RGBA4444:
-			m_pixelIntFormatGL = GL_RGBA;
-			m_pixelFormatGL = GL_RGBA;
-			m_pixelTypeGL = GL_UNSIGNED_SHORT_4_4_4_4;
-			m_pixelSize = 2;
-			break;
-		case ServoUnityTextureFormat_RGBA5551:
-			m_pixelIntFormatGL = GL_RGBA;
-			m_pixelFormatGL = GL_RGBA;
-			m_pixelTypeGL = GL_UNSIGNED_SHORT_5_5_5_1;
-			m_pixelSize = 2;
-			break;
-		case ServoUnityTextureFormat_RGB565:
-			m_pixelIntFormatGL = GL_RGB;
-			m_pixelFormatGL = GL_RGB;
-			m_pixelTypeGL = GL_UNSIGNED_SHORT_5_6_5;
-			m_pixelSize = 2;
-			break;
-		default:
-			break;
-	}
-
-    m_buf = (uint8_t *)calloc(1, m_size.w * m_size.h * m_pixelSize);
-
 	if (m_windowCreatedCallback) (*m_windowCreatedCallback)(m_uidExt, m_uid, m_size.w, m_size.h, m_format);
 
 	return true;
@@ -149,8 +79,6 @@ ServoUnityWindow::Size ServoUnityWindowGL::size() {
 
 void ServoUnityWindowGL::setSize(ServoUnityWindow::Size size) {
 	m_size = size;
-	if (m_buf) free(m_buf);
-	m_buf = (uint8_t *)calloc(1, m_size.w * m_size.h * m_pixelSize);
 
     if (m_windowResizedCallback) (*m_windowResizedCallback)(m_uidExt, m_size.w, m_size.h);
 }

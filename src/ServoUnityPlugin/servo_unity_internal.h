@@ -23,11 +23,3 @@
 extern bool s_param_CloseNativeWindowOnClose;
 extern std::string s_param_SearchURI;
 extern std::string s_param_Homepage;
-
-// --------------------------------------------------------------------------
-//  Other internal globals
-
-#ifdef _WIN32
-extern "C" SERVO_UNITY_EXTERN int NvOptimusEnablement;
-extern "C" SERVO_UNITY_EXTERN int AmdPowerXpressRequestHighPerformance;
-#endif

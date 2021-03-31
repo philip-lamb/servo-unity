@@ -21,12 +21,7 @@ class ServoUnityWindowGL : public ServoUnityWindow
 private:
 	Size m_size;
 	uint32_t m_texID;
-	uint8_t *m_buf;
 	int m_format;
-	uint32_t m_pixelIntFormatGL;
-	uint32_t m_pixelFormatGL;
-	uint32_t m_pixelTypeGL;
-	uint32_t m_pixelSize;
 
 public:
 	static void initDevice();

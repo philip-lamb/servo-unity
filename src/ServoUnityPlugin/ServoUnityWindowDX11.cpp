@@ -13,7 +13,6 @@
 #include <stdlib.h>
 #include "ServoUnityWindowDX11.h"
 #if SUPPORT_D3D11
-#include <d3d11.h>
 #include "IUnityGraphicsD3D11.h"
 #include "servo_unity_log.h"
 
@@ -33,10 +32,13 @@ void ServoUnityWindowDX11::finalizeDevice() {
 
 ServoUnityWindowDX11::ServoUnityWindowDX11(int uid, int uidExt, Size size) :
 	ServoUnityWindow(uid, uidExt),
+	m_GLES(),
 	m_servoTexPtr(nullptr),
-	m_servoTexHandle(nullptr),
 	m_size(size),
+	m_formatDX(DXGI_FORMAT_UNKNOWN),
 	m_format(ServoUnityTextureFormat_Invalid),
+	m_EGLSurface(EGL_NO_SURFACE),
+	m_texID(0),
     m_unityTexPtr(nullptr)
 {
 }
@@ -72,29 +74,17 @@ static int getServoUnityTextureFormatForDXGIFormat(DXGI_FORMAT format)
 	}
 }
 
-bool ServoUnityWindowDX11::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback)
+bool ServoUnityWindowDX11::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback, const std::string& userAgent)
 {
-    if (!ServoUnityWindow::init(windowCreatedCallback, windowResizedCallback, browserEventCallback)) return false;
-    
-    // TODO: Get Servo texture handle into m_servoTexHandle.
-    if (!m_servoTexHandle) {
-		SERVOUNITYLOGe("Error: Servo texture handle is null.\n");
-		return false;
-	} else {
-		// Extract a pointer to the D3D texture from the shared handle.
-		HRESULT hr = s_D3D11Device->OpenSharedResource(m_servoTexHandle, IID_PPV_ARGS(&m_servoTexPtr));
-		if (hr != S_OK) {
-			SERVOUNITYLOGe("Can't get pointer to Servo texture from handle.\n");
-			return false;
-		} else {
-			D3D11_TEXTURE2D_DESC descServo = { 0 };
-			m_servoTexPtr->GetDesc(&descServo);
-			m_size = Size({ (int)descServo.Width, (int)descServo.Height });
-            m_format = getServoUnityTextureFormatForDXGIFormat(descServo.Format);
+    if (!ServoUnityWindow::init(windowCreatedCallback, windowResizedCallback, browserEventCallback, userAgent)) return false;
 
-			if (m_windowCreatedCallback) (*m_windowCreatedCallback)(m_uidExt, m_uid, m_size.w, m_size.h, m_format);
-		}
-	}
+	//m_formatDX = DXGI_FORMAT_R8G8B8A8_UNORM;
+	m_formatDX = DXGI_FORMAT_B8G8R8A8_UNORM; // https://github.com/microsoft/angle/issues/124#issuecomment-313821471
+	m_format = getServoUnityTextureFormatForDXGIFormat(m_formatDX);
+
+	// Actual texture creation must be done lazily on the rendering thread.
+
+	if (m_windowCreatedCallback) (*m_windowCreatedCallback)(m_uidExt, m_uid, m_size.w, m_size.h, m_format);
 
     return true;
 }
@@ -117,10 +107,56 @@ void* ServoUnityWindowDX11::nativePtr() {
 	return m_unityTexPtr;
 }
 
-void ServoUnityWindowGL::initRenderer(CInitOptions cio, void (*wakeup)(void), CHostCallbacks chc) {
-    // init_with_gl will capture the active GL context for later use by fill_gl_texture.
-    // This will be the Unity GL context.
+bool ServoUnityWindowDX11::initRenderer(CInitOptions cio, void (*wakeup)(void), CHostCallbacks chc) {
+
+	// Create the texture that will receive buffers from surfman (via ANGLE's DirectX interop).
+	D3D11_TEXTURE2D_DESC descServo = { 0 };
+	descServo.Width = m_size.w;
+	descServo.Height = m_size.h;
+	descServo.Format = m_formatDX;
+	descServo.MipLevels = 1;
+	descServo.ArraySize = 1;
+	descServo.SampleDesc.Count = 1;
+	descServo.SampleDesc.Quality = 0;
+	descServo.Usage = D3D11_USAGE_DEFAULT;
+	descServo.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	descServo.CPUAccessFlags = 0;
+	descServo.MiscFlags = D3D11_RESOURCE_MISC_SHARED; // D3D11_RESOURCE_MISC_SHARED or D3D11_RESOURCE_MISC_SHARED_KEYEDMUTEX.
+	HRESULT hr = s_D3D11Device->CreateTexture2D(&descServo, nullptr, &m_servoTexPtr);
+	if FAILED(hr) {
+		SERVOUNITYLOGe("Error: Unable to create texture.\n");
+		return false;
+	}
+
+	// Set up EGL context.
+	if (!m_GLES.Initialize()) {
+		SERVOUNITYLOGe("Unable to initialise EGL.\n");
+		return false;
+	}
+	if ((m_EGLSurface = m_GLES.CreateSurface(m_servoTexPtr)) == EGL_NO_SURFACE) {
+		SERVOUNITYLOGe("Unable to create EGL surface.\n");
+		return false;
+	}
+	m_GLES.MakeCurrent(m_EGLSurface);
+
+	m_texID = m_GLES.CreateSurfaceTexture(m_EGLSurface);
+
+    // init_with_egl will capture the active EGL context for later use by fill_gl_texture.
+    // This will be the Unity EGL context.
     init_with_egl(cio, wakeup, chc);
+	return true;
+}
+
+void ServoUnityWindowDX11::cleanupRenderer()
+{
+	m_GLES.DestroySurfaceTexture(m_texID, m_EGLSurface);
+	m_texID = 0;
+	m_GLES.DestroySurface(m_EGLSurface);
+	m_EGLSurface = EGL_NO_SURFACE;
+	m_GLES.Cleanup();
+	// TODO: Also clean up DirectX textures.
+
+	ServoUnityWindow::cleanupRenderer();
 }
 
 void ServoUnityWindowDX11::requestUpdate(float timeDelta) {
@@ -128,8 +164,22 @@ void ServoUnityWindowDX11::requestUpdate(float timeDelta) {
 
     ServoUnityWindow::requestUpdate(timeDelta);
 
-	if (!m_servoTexPtr || !m_unityTexPtr) {
-		SERVOUNITYLOGi("ServoUnityWindowDX11::requestUpdate() m_servoTexPtr=%p, m_unityTexPtr=%p.\n", m_servoTexPtr, m_unityTexPtr);
+	m_GLES.MakeCurrent(m_EGLSurface);
+
+	if (!fill_gl_texture(m_texID, m_size.w, m_size.h)) {
+		SERVOUNITYLOGd("ServoUnityWindowDX11::requestUpdate no buffer pending.\n");
+		return;
+	}
+
+	// Need to flush here to ensure writes have finished before we use in DirectX.
+	glFlush();
+
+	if (!m_servoTexPtr) {
+		SERVOUNITYLOGi("ServoUnityWindowDX11::requestUpdate() null m_servoTexPtr.\n");
+		return;
+	}
+	if (!m_unityTexPtr) {
+		SERVOUNITYLOGi("ServoUnityWindowDX11::requestUpdate() null m_unityTexPtr.\n");
 		return;
 	}
 
@@ -137,11 +187,11 @@ void ServoUnityWindowDX11::requestUpdate(float timeDelta) {
 	s_D3D11Device->GetImmediateContext(&ctx);
 
 	D3D11_TEXTURE2D_DESC descUnity = { 0 };
-	D3D11_TEXTURE2D_DESC descServo = { 0 };
-
-	m_servoTexPtr->GetDesc(&descServo);
 	((ID3D11Texture2D*)m_unityTexPtr)->GetDesc(&descUnity);
 	//SERVOUNITYLOGd("Unity texture is %dx%d, DXGI_FORMAT=%d (ServoUnityTextureFormat=%d), MipLevels=%d, D3D11_USAGE Usage=%d, BindFlags=%d, CPUAccessFlags=%d, MiscFlags=%d\n", descUnity.Width, descUnity.Height, descUnity.Format, getServoUnityTextureFormatForDXGIFormat(descUnity.Format), descUnity.MipLevels, descUnity.Usage, descUnity.BindFlags, descUnity.CPUAccessFlags, descUnity.MiscFlags);
+
+	D3D11_TEXTURE2D_DESC descServo = { 0 };
+	m_servoTexPtr->GetDesc(&descServo);
 	if (descServo.Width != descUnity.Width || descServo.Height != descServo.Height) {
 		SERVOUNITYLOGe("Error: Unity texture size %dx%d does not match Servo texture size %dx%d.\n", descUnity.Width, descUnity.Height, descServo.Width, descServo.Height);
 	} else {

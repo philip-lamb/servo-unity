@@ -115,7 +115,7 @@ public class ServoUnityPointer : MonoBehaviour
         // Send a pointer exit event if required.
         if (previousContact) {
             ServoUnityPointableSurface sups = previousContact.gameObject.GetComponentInParent(typeof(ServoUnityPointableSurface)) as ServoUnityPointableSurface;
-            sups?.PointerExit();
+            sups.PointerExit();
 
             PointerEventArgs args = new PointerEventArgs();
             args.flags = 0;
@@ -206,7 +206,7 @@ public class ServoUnityPointer : MonoBehaviour
         if (previousContact && (!bHit || previousContact != hit.transform))
         {
             ServoUnityPointableSurface sups = previousContact.gameObject.GetComponentInParent(typeof(ServoUnityPointableSurface)) as ServoUnityPointableSurface;
-            sups?.PointerExit();
+            sups.PointerExit();
 
             PointerEventArgs args = new PointerEventArgs();
             args.flags = 0;
@@ -234,7 +234,7 @@ public class ServoUnityPointer : MonoBehaviour
 
             if (previousContact != hit.transform)
             {
-                sups?.PointerEnter();
+                sups.PointerEnter();
 
                 PointerEventArgs argsIn = new PointerEventArgs();
                 argsIn.flags = 0;
@@ -247,7 +247,7 @@ public class ServoUnityPointer : MonoBehaviour
 
             if (buttonDown[0])
             {
-                sups?.PointerPress(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Left, hit.textureCoord);
+                sups.PointerPress(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Left, hit.textureCoord);
                 previousContactButtonDown[0] = previousContact;
 
                 PointerEventArgs argsClick = new PointerEventArgs();
@@ -257,21 +257,21 @@ public class ServoUnityPointer : MonoBehaviour
             }
             if (buttonDown[1])
             {
-                sups?.PointerPress(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Right, hit.textureCoord);
+                sups.PointerPress(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Right, hit.textureCoord);
                 previousContactButtonDown[1] = previousContact;
             }
             if (buttonDown[2])
             {
-                sups?.PointerPress(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Middle, hit.textureCoord);
+                sups.PointerPress(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Middle, hit.textureCoord);
                 previousContactButtonDown[2] = previousContact;
             }
 
             if (buttonUp[0])
             {
-                sups?.PointerRelease(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Left, hit.textureCoord);
+                sups.PointerRelease(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Left, hit.textureCoord);
                 if (previousContactButtonDown[0] == previousContact)
                 {
-                    sups?.PointerClick(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Left, hit.textureCoord);
+                    sups.PointerClick(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Left, hit.textureCoord);
                 }
 
                 PointerEventArgs argsClick = new PointerEventArgs();
@@ -285,30 +285,30 @@ public class ServoUnityPointer : MonoBehaviour
             }
             if (buttonUp[1])
             {
-                sups?.PointerRelease(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Right, hit.textureCoord);
+                sups.PointerRelease(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Right, hit.textureCoord);
                 if (previousContactButtonDown[1] == previousContact)
                 {
-                    sups?.PointerClick(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Right, hit.textureCoord);
+                    sups.PointerClick(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Right, hit.textureCoord);
                 }
             }
             if (buttonUp[2])
             {
-                sups?.PointerRelease(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Middle, hit.textureCoord);
+                sups.PointerRelease(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Middle, hit.textureCoord);
                 if (previousContactButtonDown[2] == previousContact)
                 {
-                    sups?.PointerClick(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Middle, hit.textureCoord);
+                    sups.PointerClick(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Middle, hit.textureCoord);
                 }
             }
 
             if (hit.textureCoord != previousCoord)
             {
-                sups?.PointerOver(hit.textureCoord);
+                sups.PointerOver(hit.textureCoord);
                 previousCoord = hit.textureCoord;
             }
 
             if (scrollDelta != Vector2.zero)
             {
-                sups?.PointerScrollDiscrete(scrollDelta * discreteScrollStepSize, hit.textureCoord);
+                sups.PointerScrollDiscrete(scrollDelta * discreteScrollStepSize, hit.textureCoord);
             }
         } // bHit
     }

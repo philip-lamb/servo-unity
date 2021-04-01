@@ -15,7 +15,7 @@ using UnityEngine;
 
 public class ServoUnityDemoCameraManipulator : MonoBehaviour
 {
-    private ServoUnityController suc = null;
+    private ServoUnityIME ime = null;
     private Camera c;
 
     const float millisecsToFullmovementFactor = 300.0f; // How long (in milliseconds) to reach full movement speed.
@@ -26,7 +26,7 @@ public class ServoUnityDemoCameraManipulator : MonoBehaviour
 
     void Awake()
     {
-        suc = FindObjectOfType<ServoUnityController>();
+        ime = FindObjectOfType<ServoUnityIME>();
         c = gameObject.GetComponent<Camera>();
         if (c == null) c = Camera.main;
     }
@@ -37,7 +37,7 @@ public class ServoUnityDemoCameraManipulator : MonoBehaviour
         // Process keyboard-driven motion of the camera.
         //
 
-        bool keyboardOKForMovement = !suc.KeyboardInUse;
+        bool keyboardOKForMovement = !ime.IMEActive;
         float accelFactor = Time.deltaTime*1000.0f / millisecsToFullmovementFactor;
 
         Vector3 excursion = new Vector3(Mathf.Abs(moveAroundFactor.x), Mathf.Abs(moveAroundFactor.y), Mathf.Abs(moveAroundFactor.z));

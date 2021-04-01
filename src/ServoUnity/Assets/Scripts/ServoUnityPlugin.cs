@@ -20,7 +20,7 @@ using UnityEngine;
 public delegate void ServoUnityPluginLogCallback([MarshalAs(UnmanagedType.LPStr)] string msg);
 public delegate void ServoUnityPluginWindowCreatedCallback(int uid, int windowIndex, int pixelWidth, int pixelHeight, int format);
 public delegate void ServoUnityPluginWindowResizedCallback(int uid, int pixelWidth, int pixelHeight);
-public delegate void ServoUnityPluginBrowserEventCallback(int uid, int eventType, int eventData1, int eventData2);
+public delegate void ServoUnityPluginBrowserEventCallback(int uid, int eventType, int eventData0, int eventData1, [MarshalAs(UnmanagedType.LPStr)] string eventDataS);
 public delegate void ServoUnityPluginFullScreenBeginCallback(int pixelWidth, int pixelHeight, int format, int projection);
 public delegate void ServoUnityPluginFullEndCallback();
 
@@ -77,7 +77,7 @@ public class ServoUnityPlugin
         else return "";
     }
 
-    public void ServoUnityInit(ServoUnityPluginWindowCreatedCallback wccb, ServoUnityPluginWindowResizedCallback wrcb, ServoUnityPluginBrowserEventCallback becb)
+    public void ServoUnityInit(ServoUnityPluginWindowCreatedCallback wccb, ServoUnityPluginWindowResizedCallback wrcb, ServoUnityPluginBrowserEventCallback becb, string userAgent)
     {
         windowCreatedCallback = wccb;
         windowResizedCallback = wrcb;
@@ -88,7 +88,7 @@ public class ServoUnityPlugin
         windowResizedCallbackGCH = GCHandle.Alloc(windowResizedCallback);
         browserEventCallbackGCH = GCHandle.Alloc(browserEventCallback);
         
-        ServoUnityPlugin_pinvoke.servoUnityInit(windowCreatedCallback, windowResizedCallback, browserEventCallback);
+        ServoUnityPlugin_pinvoke.servoUnityInit(windowCreatedCallback, windowResizedCallback, browserEventCallback, userAgent);
     }
 
     public void ServoUnityFinalise()
@@ -208,34 +208,7 @@ public class ServoUnityPlugin
         return ServoUnityPlugin_pinvoke.servoUnityRequestWindowSizeChange(windowIndex, widthPixelsRequested, heightPixelsRequested);
     }
 
-    public TextureFormat NativeFormatToTextureFormat(int formatNative)
-    {
-        switch (formatNative)
-        {
-            case 1:
-                return TextureFormat.RGBA32;
-            case 2:
-                return TextureFormat.BGRA32;
-            case 3:
-                return TextureFormat.ARGB32;
-            //case 4:
-            //    format = TextureFormat.ABGR32;
-            case 5:
-                return TextureFormat.RGB24;
-            //case 6:
-            //    format = TextureFormat.BGR24;
-            case 7:
-                return TextureFormat.RGBA4444;
-            //case 8:
-            //    format = TextureFormat.RGBA5551;
-            case 9:
-                return TextureFormat.RGB565;
-            default:
-                return (TextureFormat) 0;
-        }
-    }
-
-    public bool ServoUnityGetTextureFormat(int windowIndex, out int width, out int height, out TextureFormat format,
+    public bool ServoUnityGetWindowTextureFormat(int windowIndex, out int width, out int height, out TextureFormat format,
         out bool mipChain, out bool linear, out IntPtr nativeTexureID)
     {
         int formatNative;
@@ -244,7 +217,7 @@ public class ServoUnityPlugin
             out linear, nativeTextureIDHandle);
         nativeTexureID = nativeTextureIDHandle[0];
 
-        format = NativeFormatToTextureFormat(formatNative);
+        format = ServoUnityTextureUtils.GetTextureFormatFromNativeTextureFormat(formatNative);
         if (format == (TextureFormat) 0)
         {
             return false;
@@ -301,6 +274,10 @@ public class ServoUnityPlugin
         Release = 4,
         Click = 5,
         ScrollDiscrete = 6,
+        TouchBegin = 7,
+        TouchMove = 8,
+        TouchEnd = 9,
+        TouchCancel = 10,
         Max
     };
 
@@ -326,6 +303,7 @@ public class ServoUnityPlugin
         GoForward = 4,
         GoHome = 5,
         Navigate = 6,
+        IMEDismissed = 7,
         Max
     };
 
@@ -338,10 +316,10 @@ public class ServoUnityPlugin
     {
         NOP = 0,
         Shutdown = 1,
-        LoadStateChanged = 2, // eventData1: 0=LoadEnded, 1=LoadStarted,
-        FullscreenStateChanged = 3, // eventData1: 0=WillEnterFullscreen, 1=DidEnterFullscreen, 2=WillExitFullscreen, 3=DidExitFullscreen,
-        IMEStateChanged = 4, // eventData1: 0=HideIME, 1=ShowIME
-        HistoryChanged = 5, // eventData1: 0=CantGoBack, 1=CanGoBack, eventData1: 0=CantGoForward, 1=CanGoForward
+        LoadStateChanged = 2, // eventData0: 0=LoadEnded, 1=LoadStarted,
+        FullscreenStateChanged = 3, // eventData0: 0=WillEnterFullscreen, 1=DidEnterFullscreen, 2=WillExitFullscreen, 3=DidExitFullscreen,
+        IMEStateChanged = 4, // eventData0: 0=HideIME, 1=ShowIME, 2=ShowIME multiline. eventData1 (ShowIME) = initialIMETextCaratIndex or 0, eventDataS (ShowIME) = initialIMEText.
+        HistoryChanged = 5, // eventData0: 0=CantGoBack, 1=CanGoBack, eventData1: 0=CantGoForward, 1=CanGoForward
         TitleChanged = 6,
         URLChanged = 7,
         Max

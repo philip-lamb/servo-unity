@@ -19,23 +19,22 @@
 #if SUPPORT_D3D11
 #include <cstdint>
 #include <string>
-#include <Windows.h>
+#include <d3d11.h>
 #include "IUnityInterface.h"
-
-struct ID3D11Texture2D;
+#include "OpenGLES.h"
 
 class ServoUnityWindowDX11 : public ServoUnityWindow
 {
 private:
 
+	OpenGLES m_GLES;
 	ID3D11Texture2D* m_servoTexPtr;
-	void* m_servoTexHandle;
 	Size m_size;
+	DXGI_FORMAT m_formatDX;
 	int m_format;
+	EGLSurface m_EGLSurface;
+	GLuint m_texID;
 	void *m_unityTexPtr;
-    PFN_WINDOWCREATEDCALLBACK m_windowCreatedCallback;
-    PFN_WINDOWRESIZEDCALLBACK m_windowResizedCallback;
-    PFN_BROWSEREVENTCALLBACK m_browserEventCallback;
 
 public:
 	static void initDevice(IUnityInterfaces* unityInterfaces);
@@ -46,7 +45,7 @@ public:
     //ServoUnityWindowDX11(const ServoUnityWindowDX11&) = delete;
 	//void operator=(const ServoUnityWindowDX11&) = delete;
 
-	bool init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback) override;
+	bool init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback, const std::string& userAgent) override;
     RendererAPI rendererAPI() override {return RendererAPI::DirectX11;}
 	Size size() override;
 	void setSize(Size size) override;
@@ -55,7 +54,8 @@ public:
 	void* nativePtr() override;
 
 	void requestUpdate(float timeDelta) override;
-    void initRenderer(CInitOptions cio, void (*wakeup)(void), CHostCallbacks chc) override;
+    bool initRenderer(CInitOptions cio, void (*wakeup)(void), CHostCallbacks chc) override;
+	void cleanupRenderer() override;
 };
 
 #endif // SUPPORT_D3D11

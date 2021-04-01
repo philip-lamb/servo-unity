@@ -18,20 +18,24 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 
-// Which Unity platform we are on?
+// Which platform we are on?
 // UNITY_WIN - Windows (regular win32)
 // UNITY_OSX - Mac OS X
 // UNITY_LINUX - Linux
-// UNITY_IPHONE - iOS
+// UNITY_IOS - iOS
+// UNITY_TVOS - tvOS
 // UNITY_ANDROID - Android
 // UNITY_METRO - WSA or UWP
 // UNITY_WEBGL - WebGL
 #if _MSC_VER
 #  define UNITY_WIN 1
 #elif defined(__APPLE__)
-#  if defined(__arm__) || defined(__arm64__)
-#    define UNITY_IPHONE 1
+#  if TARGET_OS_TV
+#    define UNITY_TVOS 1
+#  elif TARGET_OS_IOS
+#    define UNITY_IOS 1
 #  else
 #    define UNITY_OSX 1
 #  endif
@@ -46,19 +50,19 @@
 #  error "Unknown platform!"
 #endif
 
-// Which Unity graphics device APIs we possibly support?
+// Which graphics device APIs we possibly support?
 #if UNITY_METRO
 #  define SUPPORT_D3D11 1
 #  if WINDOWS_UWP
 #    define SUPPORT_D3D12 1
 #  endif
 #elif UNITY_WIN
-#  define SUPPORT_D3D11 0 // comment this out if you don't have D3D11 header/library files
-#  define SUPPORT_D3D12 0 //@TODO: enable by default? comment this out if you don't have D3D12 header/library files
+#  define SUPPORT_D3D11 1 // comment this out if you don't have D3D11 header/library files
+#  define SUPPORT_D3D12 1 // comment this out if you don't have D3D12 header/library files
 #  define SUPPORT_OPENGL_UNIFIED 1
 #  define SUPPORT_OPENGL_CORE 1
 #  define SUPPORT_VULKAN 0 // Requires Vulkan SDK to be installed
-#elif UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
+#elif UNITY_IOS || UNITY_TVOS || UNITY_ANDROID || UNITY_WEBGL
 #  ifndef SUPPORT_OPENGL_ES
 #    define SUPPORT_OPENGL_ES 1
 #  endif
@@ -70,7 +74,8 @@
 #  define SUPPORT_OPENGL_UNIFIED 1
 #  define SUPPORT_OPENGL_CORE 1
 #endif
-#if UNITY_IPHONE || UNITY_OSX
+
+#if UNITY_IOS || UNITY_TVOS || UNITY_OSX
 #  define SUPPORT_METAL 1
 #endif
 
@@ -156,7 +161,7 @@ typedef void (SERVO_UNITY_CALLBACK *PFN_WINDOWCREATEDCALLBACK)(int uidExt, int w
 
 typedef void (SERVO_UNITY_CALLBACK *PFN_WINDOWRESIZEDCALLBACK)(int uidExt, int pixelWidth, int pixelHeight);
 
-typedef void (SERVO_UNITY_CALLBACK *PFN_BROWSEREVENTCALLBACK)(int uidExt, int eventType, int eventData1, int eventData2);
+typedef void (SERVO_UNITY_CALLBACK *PFN_BROWSEREVENTCALLBACK)(int uidExt, int eventType, int eventData0, int eventData1, const char *eventDataS);
 
 ///
 /// Registers a callback function to use when a message is logged in the plugin.
@@ -177,7 +182,7 @@ SERVO_UNITY_EXTERN void servoUnityFlushLog(void);
 ///
 SERVO_UNITY_EXTERN bool servoUnityGetVersion(char *buffer, int length);
 
-SERVO_UNITY_EXTERN void servoUnityInit(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback);
+SERVO_UNITY_EXTERN void servoUnityInit(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback, const char *userAgent);
 
 SERVO_UNITY_EXTERN void servoUnityFinalise(void);
 
@@ -322,11 +327,13 @@ enum {
 	ServoUnityPointerEventID_Release = 4,
     ServoUnityPointerEventID_Click = 5,
 	ServoUnityPointerEventID_ScrollDiscrete = 6,
+    ServoUnityPointerEventID_TouchBegin = 7,
+    ServoUnityPointerEventID_TouchMove = 8,
+    ServoUnityPointerEventID_TouchEnd = 9,
+    ServoUnityPointerEventID_TouchCancel = 10,
     ServoUnityPointerEventID_Max
 };
 
-/// For ServoUnityPointerEventID_Press, ServoUnityPointerEventID_Release, and ServoUnityPointerEventID_Click,
-/// eventParam0 is MouseButtonID.
 enum {
     ServoUnityPointerEventMouseButtonID_Left = 0,
     ServoUnityPointerEventMouseButtonID_Right = 1,
@@ -334,7 +341,22 @@ enum {
     ServoUnityPointerEventMouseButtonID_Max
 };
 
-SERVO_UNITY_EXTERN void servoUnityWindowPointerEvent(int windowIndex, int eventParam0, int eventParam1, int eventID, int windowX, int windowY);
+/// <summary>
+/// Send a pointer event to Servo.
+/// </summary>
+/// <param name="windowIndex"></param>
+/// <param name="eventID">A pointer event ID, from the enum ServoUnityPointerEventID_*.</param>
+/// <param name="eventParam0"> For ServoUnityPointerEventID_Press, ServoUnityPointerEventID_Release, and ServoUnityPointerEventID_Click,
+/// eventParam0 is a zero-based index for the mouse button, as indexed by the enum ServoUnityPointerEventMouseButtonID_*.
+/// For ServoUnityPointerEventID_TouchBegin, ServoUnityPointerEventID_TouchMove, ServoUnityPointerEventID_TouchEnd,
+/// and ServoUnityPointerEventID_TouchCancel event0 is an touch ID, which must be unique for any given finger for the duration of the
+/// touch event. For all other eventID types, unused.
+/// </param>
+/// <param name="eventParam1"></param>
+/// <param name="windowX">Window x coordinate at which the event occured.</param>
+/// <param name="windowY">Window y coordinate at which the event occured.</param>
+/// <returns></returns>
+SERVO_UNITY_EXTERN void servoUnityWindowPointerEvent(int windowIndex, int eventID, int eventParam0, int eventParam1, int windowX, int windowY);
 
 enum {
     ServoUnityWindowBrowserControlEventID_Refresh = 0,
@@ -344,6 +366,7 @@ enum {
     ServoUnityWindowBrowserControlEventID_GoForward = 4,
     ServoUnityWindowBrowserControlEventID_GoHome = 5,
     ServoUnityWindowBrowserControlEventID_Navigate = 6,
+    ServoUnityWindowBrowserControlEventID_IMEDismissed = 7,
     ServoUnityWindowBrowserControlEventID_Max
 };
 

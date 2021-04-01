@@ -14,6 +14,7 @@ using UnityEngine.UI;
 
 public class ServoUnityWindow : ServoUnityPointableSurface
 {
+    private ServoUnityController suc = null;
     public int DefaultWidthToRequest = 1920;
     public int DefaultHeightToRequest = 1080;
     public bool flipX = false;
@@ -57,14 +58,6 @@ public class ServoUnityWindow : ServoUnityPointableSurface
         return null;
     }
 
-    // TODO: This is only necessary in the current state of affairs where we are sharing a video texture id between video and windows...
-    public void RecreateVideoTexture()
-    {
-        _videoTexture = CreateWindowTexture(videoSize.x, videoSize.y, _textureFormat, out textureScaleU,
-            out textureScaleV);
-        _videoMeshGO.GetComponent<Renderer>().material.mainTexture = _videoTexture;
-    }
-
     public static ServoUnityWindow CreateNewInParent(GameObject parent)
     {
         Debug.Log("ServoUnityWindow.CreateNewInParent(parent:" + parent + ")");
@@ -72,8 +65,14 @@ public class ServoUnityWindow : ServoUnityPointableSurface
         return window;
     }
 
-    private void OnEnable()
+    void Awake()
     {
+        suc = FindObjectOfType<ServoUnityController>();
+    }
+
+    void OnDestroy()
+    {
+        suc = null;
     }
 
     public bool Visible
@@ -94,10 +93,6 @@ public class ServoUnityWindow : ServoUnityPointableSurface
     public int WindowIndex
     {
         get => _windowIndex;
-    }
-
-    private void OnDisable()
-    {
     }
 
     private void HandleCloseKeyPressed()
@@ -146,6 +141,13 @@ public class ServoUnityWindow : ServoUnityPointableSurface
         return false;
     }
 
+    /// <summary>
+    /// Gets called once the plugin-side setup is done.
+    /// </summary>
+    /// <param name="windowIndex">The ID used on the plugin side to refer to this window.</param>
+    /// <param name="widthPixels"></param>
+    /// <param name="heightPixels"></param>
+    /// <param name="format"></param>
     public void WasCreated(int windowIndex, int widthPixels, int heightPixels, TextureFormat format)
     {
         Debug.Log("ServoUnityWindow.WasCreated(windowIndex:" + windowIndex + ", widthPixels:" + widthPixels +
@@ -156,11 +158,13 @@ public class ServoUnityWindow : ServoUnityPointableSurface
         _textureFormat = format;
         _videoTexture = CreateWindowTexture(videoSize.x, videoSize.y, _textureFormat, out textureScaleU, out textureScaleV);
         _videoMeshGO = ServoUnityTextureUtils.Create2DVideoSurface(_videoTexture, textureScaleU, textureScaleV, Width, Height,
-            0, flipX, flipY);
+            0, flipX, flipY, ServoUnityTextureUtils.VideoSurfaceColliderType.Box);
         _videoMeshGO.transform.parent = this.gameObject.transform;
         _videoMeshGO.transform.localPosition = Vector3.zero;
         _videoMeshGO.transform.localRotation = Quaternion.identity;
         _videoMeshGO.SetActive(Visible);
+
+        suc.NavbarWindow = this; // Set ourself as the active window for the navbar.
     }
 
     public void WasResized(int widthPixels, int heightPixels)

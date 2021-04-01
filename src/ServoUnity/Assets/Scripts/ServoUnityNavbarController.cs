@@ -2,6 +2,7 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 //
 // Copyright (c) 2019-2020 Mozilla.
+// Copyright (c) 2021 Eden Networks Ltd.
 //
 // Author(s): Philip Lamb
 
@@ -24,6 +25,11 @@ public class ServoUnityNavbarController : MonoBehaviour
     void Awake()
     {
         suc = FindObjectOfType<ServoUnityController>();
+    }
+
+    void OnDestroy()
+    {
+        suc = null;
     }
 
     void Start()
@@ -58,6 +64,7 @@ public class ServoUnityNavbarController : MonoBehaviour
 
     public void OnBackPressed()
     {
+        Debug.Log("OnBackPressed()");
         if (suc && suc.NavbarWindow) {
             suc.Plugin.ServoUnityWindowBrowserControlEvent(suc.NavbarWindow.WindowIndex, ServoUnityPlugin.ServoUnityWindowBrowserControlEventID.GoBack, 0, 0, null);
         }
@@ -65,6 +72,7 @@ public class ServoUnityNavbarController : MonoBehaviour
 
     public void OnForwardPressed()
     {
+        Debug.Log("OnForwardPressed()");
         if (suc && suc.NavbarWindow)
         {
             suc.Plugin.ServoUnityWindowBrowserControlEvent(suc.NavbarWindow.WindowIndex, ServoUnityPlugin.ServoUnityWindowBrowserControlEventID.GoForward, 0, 0, null);
@@ -73,6 +81,7 @@ public class ServoUnityNavbarController : MonoBehaviour
 
     public void OnStopPressed()
     {
+        Debug.Log("OnStopPressed()");
         if (suc && suc.NavbarWindow)
         {
             suc.Plugin.ServoUnityWindowBrowserControlEvent(suc.NavbarWindow.WindowIndex, ServoUnityPlugin.ServoUnityWindowBrowserControlEventID.Stop, 0, 0, null);
@@ -81,6 +90,7 @@ public class ServoUnityNavbarController : MonoBehaviour
 
     public void OnReloadPressed()
     {
+        Debug.Log("OnReloadPressed()");
         if (suc && suc.NavbarWindow)
         {
             suc.Plugin.ServoUnityWindowBrowserControlEvent(suc.NavbarWindow.WindowIndex, ServoUnityPlugin.ServoUnityWindowBrowserControlEventID.Reload, 0, 0, null);
@@ -89,6 +99,7 @@ public class ServoUnityNavbarController : MonoBehaviour
 
     public void OnHomePressed()
     {
+        Debug.Log("OnHomePressed()");
         if (suc && suc.NavbarWindow)
         {
             suc.Plugin.ServoUnityWindowBrowserControlEvent(suc.NavbarWindow.WindowIndex, ServoUnityPlugin.ServoUnityWindowBrowserControlEventID.GoHome, 0, 0, null);
@@ -97,6 +108,7 @@ public class ServoUnityNavbarController : MonoBehaviour
 
     public void OnURLOrSearchEditingComplete()
     {
+        Debug.Log("OnURLOrSearchEditingComplete()");
         if (suc && suc.NavbarWindow)
         {
             suc.Plugin.ServoUnityWindowBrowserControlEvent(suc.NavbarWindow.WindowIndex, ServoUnityPlugin.ServoUnityWindowBrowserControlEventID.Navigate, 0, 0, URLOrSearchInputField.text);

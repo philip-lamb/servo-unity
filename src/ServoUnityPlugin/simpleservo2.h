@@ -119,6 +119,7 @@ typedef struct {
     uint32_t vslogger_mod_size;
     void *native_widget;
     const CPrefList *prefs;
+    const char *user_agent;
 } CInitOptions;
 
 // Callback used by Servo internals
@@ -131,7 +132,7 @@ typedef struct {
     void (*on_history_changed)(bool can_go_back, bool can_go_forward);
     void (*on_animating_changed)(bool animating);
     void (*on_shutdown_complete)(void);
-    void (*on_ime_show)(const char *text, int32_t x, int32_t y, int32_t width, int32_t height);
+    void (*on_ime_show)(const char *text, int32_t text_index, bool multiline, int32_t x, int32_t y, int32_t width, int32_t height);
     void (*on_ime_hide)(void);
     const char *(*get_clipboard_contents)(void);
     void (*set_clipboard_contents)(const char *contents);
@@ -159,7 +160,11 @@ void click(float x, float y);
 
 void deinit(void);
 
-void fill_gl_texture(uint32_t tex_id, int32_t tex_width, int32_t tex_height);
+// Fill GL texture with ID `tex_id` with the latest WebRender output.
+// If no new output is available, leaves the texture untouched.
+// In either case, the GL context active when `init_with_gl` or
+// `init_with_egl` was called will be active when this function returns.
+bool fill_gl_texture(uint32_t tex_id, int32_t tex_width, int32_t tex_height);
 
 CPref get_pref(const char *key);
 

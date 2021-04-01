@@ -29,7 +29,7 @@ public:
 	ServoUnityWindowGL(int uid, int uidExt, Size size);
 	~ServoUnityWindowGL() ;
 
-	bool init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback) override;
+	bool init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback, const std::string& userAgent) override;
     RendererAPI rendererAPI() override {return RendererAPI::OpenGLCore;}
 	Size size() override;
 	void setSize(Size size) override;
@@ -38,7 +38,7 @@ public:
 	void* nativePtr() override;
 
 	void requestUpdate(float timeDelta) override;
-	void initRenderer(CInitOptions cio, void (*wakeup)(void), CHostCallbacks chc) override;
+	bool initRenderer(CInitOptions cio, void (*wakeup)(void), CHostCallbacks chc) override;
 };
 
 #endif // SUPPORT_OPENGL_CORE

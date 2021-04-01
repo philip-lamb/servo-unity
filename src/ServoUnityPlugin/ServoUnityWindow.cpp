@@ -16,6 +16,7 @@
 #include "servo_unity_internal.h"
 #include "servo_unity_log.h"
 #include "utils.h"
+#include <vector>
 
 
 // Unfortunately the simpleservo interface doesn't allow arbitrary userdata
@@ -34,17 +35,26 @@ ServoUnityWindow::ServoUnityWindow(int uid, int uidExt) :
     m_updateOnce(false),
     m_title(std::string()),
     m_URL(std::string()),
+    m_userAgent(std::string()),
     m_waitingForShutdown(false)
 {
 }
 
-bool ServoUnityWindow::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback)
+bool ServoUnityWindow::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback, const std::string& userAgent)
 {
     m_windowCreatedCallback = windowCreatedCallback;
     m_windowResizedCallback = windowResizedCallback;
     m_browserEventCallback = browserEventCallback;
+    m_userAgent = userAgent;
 
 	return true;
+}
+
+static std::unique_ptr<char*>cstr2ptr(const char* cstr) {
+    size_t l = strlen(cstr) + 1;
+    char *c = new char[l];
+    strncpy(c, cstr, l);
+    return std::make_unique<char *>(c);
 }
 
 void ServoUnityWindow::requestUpdate(float timeDelta) {
@@ -52,11 +62,9 @@ void ServoUnityWindow::requestUpdate(float timeDelta) {
 
     if (!s_servo) {
         SERVOUNITYLOGi("initing servo.\n");
-        s_servo = this;
         
         // Note about logs:
-        // By default: all modules are enabled. Only warn level-logs are displayed.
-        // To change the log level, add e.g. "--vslogger-level debug" to .args.
+        // By default: all modules are enabled.
         // To only print logs from specific modules, add their names to pfilters.
         // For example:
         // static char *pfilters[] = {
@@ -71,10 +79,10 @@ void ServoUnityWindow::requestUpdate(float timeDelta) {
         // .vslogger_mod_size = sizeof(pfilters) / sizeof(pfilters[0]);
         const char *args = nullptr;
 		std::string arg_ll = std::string();
-		std::string arg_ll_debug = "debug";
-		std::string arg_ll_info = "info";
-		std::string arg_ll_warn = "warn";
-		std::string arg_ll_error = "error";
+		std::string arg_ll_debug = "--vslogger-level debug";
+		std::string arg_ll_info = "--vslogger-level info";
+		std::string arg_ll_warn = "--vslogger-level warn";
+		std::string arg_ll_error = "--vslogger-level error";
         switch (servoUnityLogLevel) {
             case SERVO_UNITY_LOG_LEVEL_DEBUG: arg_ll = arg_ll_debug; break;
             case SERVO_UNITY_LOG_LEVEL_INFO: arg_ll = arg_ll_info; break;
@@ -82,7 +90,37 @@ void ServoUnityWindow::requestUpdate(float timeDelta) {
             case SERVO_UNITY_LOG_LEVEL_ERROR: arg_ll = arg_ll_error; break;
             default: break;
         }
-        if (!arg_ll.empty()) args = (std::string("--vslogger-level ") + arg_ll).c_str();
+        if (!arg_ll.empty()) args = arg_ll.c_str();
+
+        // Prefs.
+        // Servo expects raw pointers to values in memory.
+        // Use these "mem*" vectors to keep the pointers alive.
+        std::vector<std::unique_ptr<char*>> memChar;
+        std::vector<std::unique_ptr<bool>> memBool;
+        std::vector<std::unique_ptr<int64_t>> memInt;
+        std::vector<std::unique_ptr<double>> memDouble;
+        std::vector<CPref> cprefs;
+        {
+            CPref cpref;
+            // Set homepage.
+            cpref.key = "shell.homepage";
+            cpref.pref_type = CPrefType::Str;
+            auto val = cstr2ptr(s_param_Homepage.c_str());
+            cpref.value = *val;
+            memChar.push_back(std::move(val));
+            cprefs.push_back(cpref);
+        }
+        {
+            CPref cpref;
+            // Disable antialiased text.
+            cpref.key = "gfx.subpixel-text-antialiasing.enabled";
+            cpref.pref_type = CPrefType::Bool;
+            auto val = std::make_unique<bool>(false);
+            cpref.value = val.get();
+            memBool.push_back(std::move(val));
+            cprefs.push_back(cpref);
+        }
+        CPrefList prefsList = {cprefs.size(), cprefs.data()};
 
         CInitOptions cio {
             /*.args =*/ args,
@@ -92,7 +130,8 @@ void ServoUnityWindow::requestUpdate(float timeDelta) {
             /*.vslogger_mod_list =*/ nullptr,
             /*.vslogger_mod_size =*/ 0,
             /*.native_widget =*/ nullptr,
-			/*.prefs =*/ nullptr
+            /*.prefs =*/ &prefsList,
+            /*.user_agent =*/ m_userAgent.c_str()
         };
         CHostCallbacks chc {
             /*.on_load_started =*/ on_load_started,
@@ -119,7 +158,12 @@ void ServoUnityWindow::requestUpdate(float timeDelta) {
             /*.on_log_output =*/ on_log_output
         };
         
-        this->initRenderer(cio, wakeup, chc);
+        if (!this->initRenderer(cio, wakeup, chc)) {
+            SERVOUNITYLOGe("ServoUnityWindow::requestUpdate(): Failed to init renderer.\n");
+            return;
+        }
+
+        s_servo = this;
     }
 
     // Updates first.
@@ -178,7 +222,7 @@ void ServoUnityWindow::cleanupRenderer(void) {
     deinit();
     s_servo = nullptr;
 
-    queueBrowserEventCallbackTask(uidExt(), ServoUnityBrowserEvent_Shutdown, 0, 0);
+    queueBrowserEventCallbackTask(uidExt(), ServoUnityBrowserEvent_Shutdown, 0, 0, NULL);
     SERVOUNITYLOGd("Cleaning up renderer... DONE.\n");
 }
 
@@ -187,9 +231,10 @@ void ServoUnityWindow::runOnServoThread(std::function<void()> task) {
     m_servoTasks.push_back(task);
 }
 
-void ServoUnityWindow::queueBrowserEventCallbackTask(int uidExt, int eventType, int eventData1, int eventData2) {
+void ServoUnityWindow::queueBrowserEventCallbackTask(int uidExt, int eventType, int eventData1, int eventData2, const char *eventDataS) {
     std::lock_guard<std::mutex> lock(m_browserEventCallbackTasksLock);
-    BROWSEREVENTCALLBACKTASK task = {uidExt, eventType, eventData1, eventData2};
+    char* eventDataSCopy = eventDataS ? strdup(eventDataS) : NULL;
+    BROWSEREVENTCALLBACKTASK task = {uidExt, eventType, eventData1, eventData2, eventDataSCopy};
     m_browserEventCallbackTasks.push_back(task);
 }
 
@@ -206,7 +251,8 @@ void ServoUnityWindow::serviceWindowEvents() {
                 m_browserEventCallbackTasks.pop_front();
             }
         }
-        if (m_browserEventCallback) (*m_browserEventCallback)(task.uidExt, task.eventType, task.eventData1, task.eventData2);
+        if (m_browserEventCallback) (*m_browserEventCallback)(task.uidExt, task.eventType, task.eventData1, task.eventData2, task.eventDataS);
+        free(task.eventDataS);
     }
 }
 
@@ -365,6 +411,31 @@ void ServoUnityWindow::keyEvent(int upDown, int keyCode, int character) {
     else runOnServoThread([=] {key_up(kc, kt);});
 }
 
+void ServoUnityWindow::touchBegin(int touchID, int x, int y) {
+    SERVOUNITYLOGd("ServoUnityWindow::touchBegin(%d, %d, %d)\n", touchID, x, y);
+    if (!s_servo) return;
+    if (touchID < 0) return;
+    runOnServoThread([=] {touch_down((float)x, (float)y, touchID); });
+}
+void ServoUnityWindow::touchMove(int touchID, int x, int y) {
+    SERVOUNITYLOGd("ServoUnityWindow::touchMove(%d, %d, %d)\n", touchID, x, y);
+    if (!s_servo) return;
+    if (touchID < 0) return;
+    runOnServoThread([=] {touch_move((float)x, (float)y, touchID); });
+}
+void ServoUnityWindow::touchEnd(int touchID, int x, int y) {
+    SERVOUNITYLOGd("ServoUnityWindow::touchEnd(%d, %d, %d)\n", touchID, x, y);
+    if (!s_servo) return;
+    if (touchID < 0) return;
+    runOnServoThread([=] {touch_up((float)x, (float)y, touchID); });
+}
+void ServoUnityWindow::touchCancel(int touchID, int x, int y) {
+    SERVOUNITYLOGd("ServoUnityWindow::touchCancel(%d)\n", touchID);
+    if (!s_servo) return;
+    if (touchID < 0) return;
+    runOnServoThread([=] {touch_cancel((float)x, (float)y, touchID); });
+}
+
 void ServoUnityWindow::refresh()
 {
     if (!s_servo) return;
@@ -437,6 +508,14 @@ void ServoUnityWindow::navigate(const std::string& urlOrSearchString)
     });
 }
 
+void ServoUnityWindow::imeDismissed()
+{
+    if (!s_servo) return;
+    runOnServoThread([=] {
+        ime_dismissed();
+    });
+}
+
 //
 // Callback implementations. These are all necesarily static, so have to fetch the active instance
 // via the static instance pointer s_servo.
@@ -450,14 +529,14 @@ void ServoUnityWindow::on_load_started(void)
 {
     SERVOUNITYLOGd("servo callback on_load_started\n");
     if (!s_servo) return;
-    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_LoadStateChanged, 1, 0);
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_LoadStateChanged, 1, 0, NULL);
 }
 
 void ServoUnityWindow::on_load_ended(void)
 {
     SERVOUNITYLOGd("servo callback on_load_ended\n");
     if (!s_servo) return;
-    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_LoadStateChanged, 0, 0);
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_LoadStateChanged, 0, 0, NULL);
 }
 
 void ServoUnityWindow::on_title_changed(const char *title)
@@ -465,7 +544,7 @@ void ServoUnityWindow::on_title_changed(const char *title)
     SERVOUNITYLOGd("servo callback on_title_changed: %s\n", title);
     if (!s_servo) return;
     s_servo->m_title = std::string(title);
-    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_TitleChanged, 0, 0);
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_TitleChanged, 0, 0, NULL);
 }
 
 bool ServoUnityWindow::on_allow_navigation(const char *url)
@@ -479,14 +558,14 @@ void ServoUnityWindow::on_url_changed(const char *url)
     SERVOUNITYLOGd("servo callback on_url_changed: %s\n", url);
     if (!s_servo) return;
     s_servo->m_URL = std::string(url);
-    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_URLChanged, 0, 0);
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_URLChanged, 0, 0, NULL);
 }
 
 void ServoUnityWindow::on_history_changed(bool can_go_back, bool can_go_forward)
 {
     SERVOUNITYLOGd("servo callback on_history_changed: can_go_back:%s, can_go_forward:%s\n", can_go_back ? "true" : "false", can_go_forward ? "true" : "false");
     if (!s_servo) return;
-    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_HistoryChanged, can_go_back ? 1 : 0, can_go_forward ? 1 : 0);
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_HistoryChanged, can_go_back ? 1 : 0, can_go_forward ? 1 : 0, NULL);
 }
 
 void ServoUnityWindow::on_animating_changed(bool animating)
@@ -504,18 +583,18 @@ void ServoUnityWindow::on_shutdown_complete(void)
     s_servo->m_waitingForShutdown = false;
 }
 
-void ServoUnityWindow::on_ime_show(const char *text, int32_t x, int32_t y, int32_t width, int32_t height)
+void ServoUnityWindow::on_ime_show(const char *text, int32_t text_index, bool multiline, int32_t x, int32_t y, int32_t width, int32_t height)
 {
-    SERVOUNITYLOGd("servo callback on_ime_show(text:%s, x:%d, y:%d, width:%d, height:%d)\n");
+    SERVOUNITYLOGd("servo callback on_ime_show(text:%s, text_index:%d, multiline:%s, x:%d, y:%d, width:%d, height:%d)\n", text, text_index, multiline ? "true" : "false", x, y, width, height);
     if (!s_servo) return;
-    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_IMEStateChanged, 1, 0);
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_IMEStateChanged, multiline ? 2 : 1, text_index, text);
 }
 
 void ServoUnityWindow::on_ime_hide(void)
 {
     SERVOUNITYLOGi("servo callback on_ime_hide\n");
     if (!s_servo) return;
-    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_IMEStateChanged, 0, 0);
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_IMEStateChanged, 0, 0, NULL);
 }
 
 const char *ServoUnityWindow::get_clipboard_contents(void)

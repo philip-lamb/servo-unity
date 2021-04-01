@@ -32,7 +32,7 @@ protected:
     PFN_WINDOWRESIZEDCALLBACK m_windowResizedCallback;
     PFN_BROWSEREVENTCALLBACK m_browserEventCallback;
 
-	virtual void initRenderer(CInitOptions opts, void (*wakeup)(void), CHostCallbacks callbacks) = 0;
+	virtual bool initRenderer(CInitOptions opts, void (*wakeup)(void), CHostCallbacks callbacks) = 0;
 
 private:
 	static void on_load_started(void);
@@ -43,7 +43,7 @@ private:
     static void on_history_changed(bool can_go_back, bool can_go_forward);
     static void on_animating_changed(bool animating);
     static void on_shutdown_complete(void);
-    static void on_ime_show(const char *text, int32_t x, int32_t y, int32_t width, int32_t height);
+    static void on_ime_show(const char *text, int32_t text_index, bool multiline, int32_t x, int32_t y, int32_t width, int32_t height);
     static void on_ime_hide(void);
     static const char *get_clipboard_contents(void);
     static void set_clipboard_contents(const char *contents);
@@ -64,13 +64,14 @@ private:
     std::mutex m_updateLock;
     std::string m_title;
     std::string m_URL;
+    std::string m_userAgent;
     std::deque< std::function<void()> > m_servoTasks;
     std::mutex m_servoTasksLock;
-    typedef struct {int uidExt; int eventType; int eventData1; int eventData2; } BROWSEREVENTCALLBACKTASK;
+    typedef struct { int uidExt; int eventType; int eventData1; int eventData2; char* eventDataS; } BROWSEREVENTCALLBACKTASK;
     std::deque< BROWSEREVENTCALLBACKTASK > m_browserEventCallbackTasks;
     std::mutex m_browserEventCallbackTasksLock;
     void runOnServoThread(std::function<void()> task);
-    void queueBrowserEventCallbackTask(int uidExt, int eventType, int eventData1, int eventData2);
+    void queueBrowserEventCallbackTask(int uidExt, int eventType, int eventData1, int eventData2, const char *eventDataS); // eventDataS will be copied, so does not need to be kept once the task has been queued.
     bool m_waitingForShutdown;
 
 public:
@@ -99,7 +100,7 @@ public:
 	int uid() { return m_uid; }
 	int uidExt() { return m_uidExt; }
 	void setUidExt(int uidExt) { m_uidExt = uidExt; }
-	virtual bool init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback);
+	virtual bool init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback, const std::string& userAgent);
 	
 	virtual RendererAPI rendererAPI() = 0;
 	virtual Size size() = 0;
@@ -112,7 +113,7 @@ public:
 	virtual void requestUpdate(float timeDelta);
 	
     /// Notify that the renderer is going away and should be cleaned up. Must be called from render thread.
-    void cleanupRenderer(void);
+    virtual void cleanupRenderer(void);
 	
 	void CloseServoWindow() {}
 	
@@ -128,6 +129,10 @@ public:
 	void pointerClick(int button, int x, int y);
     void pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y); // x and y are a discrete scroll count, e.g. count of mousewheel "clicks".
 	void keyEvent(int upDown, int keyCode, int character);
+    void touchBegin(int touchID, int x, int y);
+    void touchMove(int touchID, int x, int y);
+    void touchEnd(int touchID, int x, int y);
+    void touchCancel(int touchID, int x, int y);
 
     void refresh();
     void reload();
@@ -136,5 +141,6 @@ public:
     void goForward();
     void goHome();
     void navigate(const std::string& urlOrSearchString);
+    void imeDismissed();
 };
 

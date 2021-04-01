@@ -43,7 +43,7 @@ public static class ServoUnityPlugin_pinvoke
     public static extern bool servoUnityGetVersion([MarshalAs(UnmanagedType.LPStr)]StringBuilder buffer, int length);
 
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public static extern void servoUnityInit(ServoUnityPluginWindowCreatedCallback callback, ServoUnityPluginWindowResizedCallback resizedCallback, ServoUnityPluginBrowserEventCallback browserEventCallback);
+    public static extern void servoUnityInit(ServoUnityPluginWindowCreatedCallback callback, ServoUnityPluginWindowResizedCallback resizedCallback, ServoUnityPluginBrowserEventCallback browserEventCallback, string userAgent);
 
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
     public static extern void servoUnityFinalise();

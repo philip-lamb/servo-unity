@@ -2,6 +2,7 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 //
 // Copyright (c) 2019-2020 Mozilla.
+// Copyright (c) 2020-2021 Kazendi Ltd.
 //
 // Author(s): Philip Lamb, Patrick O'Shaughnessey
 
@@ -10,6 +11,13 @@ using UnityEngine;
 
 public class ServoUnityTextureUtils : MonoBehaviour
 {
+    public enum VideoSurfaceColliderType
+    {
+        None, // No Collider will be added.
+        Mesh, // (Default.) Adds a MeshCollider coincident with the surface's mesh.
+        Box   // Adds a BoxCollider with depth equal to 5% of the surface's diagonal length, with front face at local z = 0.0f and lower edge at local y = 0.0f.
+    }
+
     public static Texture2D CreateTexture(int width, int height, TextureFormat format)
     {
         // Check parameters.
@@ -38,7 +46,7 @@ public class ServoUnityTextureUtils : MonoBehaviour
 
     // Creates a GameObject in layer 'layer' which renders a mesh displaying the video stream.
     public static GameObject Create2DVideoSurface(Texture2D vt, float textureScaleU, float textureScaleV, float width,
-        float height, int layer, bool flipX, bool flipY)
+        float height, int layer, bool flipX, bool flipY, VideoSurfaceColliderType colliderType = VideoSurfaceColliderType.Mesh)
     {
         // Check parameters.
         if (!vt)
@@ -59,7 +67,7 @@ public class ServoUnityTextureUtils : MonoBehaviour
 
         // Create a material which uses our "TextureNoLight" shader, and paints itself with the texture.
         Shader shaderSource = Shader.Find("TextureAlphaNoLight");
-        Material vm = new Material(shaderSource); //fxrUnity.Properties.Resources.VideoPlaneShader;
+        Material vm = new Material(shaderSource); //servoUnity.Properties.Resources.VideoPlaneShader;
         vm.hideFlags = HideFlags.HideAndDontSave;
         //Debug.Log("Created video material");
 
@@ -69,7 +77,15 @@ public class ServoUnityTextureUtils : MonoBehaviour
         meshRenderer.receiveShadows = false;
  
         vmgo.GetComponent<Renderer>().material = vm;
-        vmgo.AddComponent<MeshCollider>();
+
+        if (colliderType == VideoSurfaceColliderType.Mesh)
+        {
+            vmgo.AddComponent<MeshCollider>();
+        }
+        else if (colliderType == VideoSurfaceColliderType.Box)
+        {
+            vmgo.AddComponent<BoxCollider>();
+        }
 
         Configure2DVideoSurface(vmgo, vt, textureScaleU, textureScaleV, width, height, flipX, flipY);
         return vmgo;
@@ -114,6 +130,19 @@ public class ServoUnityTextureUtils : MonoBehaviour
         return m;
     }
 
+    /// <summary>
+    /// Given a GameObject holding a Renderer, MeshFilter, and MeshCollider, create (or replace) the
+    /// mesh filter & collider's mesh with a new mesh of appropriate dimensions and texture coordinates
+    /// to display the texture (as determined by width, height, textureScaleU, textureScaleV, flipX, and flipY).
+    /// </summary>
+    /// <param name="vmgo"></param>
+    /// <param name="vt"></param>
+    /// <param name="textureScaleU"></param>
+    /// <param name="textureScaleV"></param>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
+    /// <param name="flipX"></param>
+    /// <param name="flipY"></param>
     public static void Configure2DVideoSurface(GameObject vmgo, Texture2D vt, float textureScaleU, float textureScaleV,
         float width, float height, bool flipX, bool flipY)
     {
@@ -123,7 +152,7 @@ public class ServoUnityTextureUtils : MonoBehaviour
             return;
         }
         // Create the mesh
-        var m = ServoUnityTextureUtils.CreateVideoMesh(textureScaleU, textureScaleV, width, height, flipX, flipY);
+        Mesh m = ServoUnityTextureUtils.CreateVideoMesh(textureScaleU, textureScaleV, width, height, flipX, flipY);
         
         // Assign the texture to the window's material
         Material vm = vmgo.GetComponent<Renderer>().material;
@@ -133,8 +162,47 @@ public class ServoUnityTextureUtils : MonoBehaviour
         MeshFilter filter = vmgo.GetComponent<MeshFilter>();
         filter.mesh = m;
 
-        // Update the mesh collider mesh
-        MeshCollider vmc = vmgo.GetComponent<MeshCollider>();;
-        vmc.sharedMesh = filter.sharedMesh;
+        // Update collider, if present.
+        Collider c = vmgo.GetComponent<Collider>();
+        if (c != null)
+        {
+            if (c is MeshCollider)
+            {
+                (c as MeshCollider).sharedMesh = filter.sharedMesh;
+            }
+            else if (c is BoxCollider)
+            {
+                float depth = (new Vector2(width, height)).magnitude * 0.05f;
+                (c as BoxCollider).size = new Vector3(width, height, depth);
+                (c as BoxCollider).center = new Vector3(0.0f, height / 2.0f, depth / 2.0f); // Place box's front face at z = 0.0f, and lower edge at y = 0.0f.
+            }
+        }
+    }
+
+    public static TextureFormat GetTextureFormatFromNativeTextureFormat(int formatNative)
+    {
+        switch (formatNative)
+        {
+            case 1: // ServoUnityTextureFormat_RGBA32
+                return TextureFormat.RGBA32;
+            case 2: // ServoUnityTextureFormat_BGRA32
+                return TextureFormat.BGRA32;
+            case 3: // ServoUnityTextureFormat_ARGB32
+                return TextureFormat.ARGB32;
+            //case 4: // ServoUnityTextureFormat_ABGR32
+            //    format = TextureFormat.ABGR32;
+            case 5: // ServoUnityTextureFormat_RGB24
+                return TextureFormat.RGB24;
+            //case 6: // ServoUnityTextureFormat_BGR24
+            //    format = TextureFormat.BGR24;
+            case 7: // ServoUnityTextureFormat_RGBA4444
+                return TextureFormat.RGBA4444;
+            //case 8: // ServoUnityTextureFormat_RGBA5551
+            //    format = TextureFormat.RGBA5551;
+            case 9: // ServoUnityTextureFormat_RGB565
+                return TextureFormat.RGB565;
+            default: // ServoUnityTextureFormat_Invalid
+                return (TextureFormat)0;
+        }
     }
 }

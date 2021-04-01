@@ -44,6 +44,7 @@ static char *s_ResourcesPath = NULL;
 static PFN_WINDOWCREATEDCALLBACK m_windowCreatedCallback = nullptr;
 static PFN_WINDOWRESIZEDCALLBACK m_windowResizedCallback = nullptr;
 static PFN_BROWSEREVENTCALLBACK m_browserEventCallback = nullptr;
+static char* m_userAgent = nullptr;
 
 static std::map<int, std::unique_ptr<ServoUnityWindow>> s_windows;
 static int s_windowIndexNext = 1;
@@ -226,16 +227,19 @@ void servoUnitySetResourcesPath(const char *path)
 	}
 }
 
-void servoUnityInit(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback)
+void servoUnityInit(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback, const char *userAgent)
 {
     SERVOUNITYLOGi("servoUnityInit called on thread %" PRIu64 ".\n", getThreadID());
 	m_windowCreatedCallback = windowCreatedCallback;
 	m_windowResizedCallback = windowResizedCallback;
 	m_browserEventCallback = browserEventCallback;
+	m_userAgent = userAgent && userAgent[0] ? strdup(userAgent) : nullptr;
 }
 
 void servoUnityFinalise(void)
 {
+	free(m_userAgent);
+	m_userAgent = nullptr;
 	m_windowCreatedCallback = nullptr;
 	m_windowResizedCallback = nullptr;
 	m_browserEventCallback = nullptr;
@@ -273,7 +277,7 @@ bool servoUnityRequestNewWindow(int uidExt, int widthPixelsRequested, int height
 		SERVOUNITYLOGe("Cannot create window. Unknown/unsupported render type detected.\n");
 	}
 	auto inserted = s_windows.emplace(window->uid(), move(window));
-	if (!inserted.second || !inserted.first->second->init(m_windowCreatedCallback, m_windowResizedCallback, m_browserEventCallback)) {
+	if (!inserted.second || !inserted.first->second->init(m_windowCreatedCallback, m_windowResizedCallback, m_browserEventCallback, m_userAgent)) {
 		SERVOUNITYLOGe("Error initing window.\n");
 		return false;
 	}
@@ -516,6 +520,18 @@ void servoUnityWindowPointerEvent(int windowIndex, int eventID, int eventParam0,
 	case ServoUnityPointerEventID_ScrollDiscrete:
 		window_iter->second->pointerScrollDiscrete(eventParam0, eventParam1, windowX, windowY);
 		break;
+	case ServoUnityPointerEventID_TouchBegin:
+		window_iter->second->touchBegin(eventParam0, windowX, windowY);
+		break;
+	case ServoUnityPointerEventID_TouchMove:
+		window_iter->second->touchMove(eventParam0, windowX, windowY);
+		break;
+	case ServoUnityPointerEventID_TouchEnd:
+		window_iter->second->touchEnd(eventParam0, windowX, windowY);
+		break;
+	case ServoUnityPointerEventID_TouchCancel:
+		window_iter->second->touchCancel(eventParam0, windowX, windowY);
+		break;
 	default:
 		break;
 	}
@@ -548,6 +564,9 @@ void servoUnityWindowBrowserControlEvent(int windowIndex, int eventID, int event
     case ServoUnityWindowBrowserControlEventID_Navigate:
         window_iter->second->navigate(std::string(eventParamS));
         break;
+	case ServoUnityWindowBrowserControlEventID_IMEDismissed:
+		window_iter->second->imeDismissed();
+		break;
     default:
         break;
     }

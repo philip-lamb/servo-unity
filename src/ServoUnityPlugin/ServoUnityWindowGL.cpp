@@ -48,9 +48,9 @@ ServoUnityWindowGL::ServoUnityWindowGL(int uid, int uidExt, Size size) :
 ServoUnityWindowGL::~ServoUnityWindowGL() {
 }
 
-bool ServoUnityWindowGL::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback)
+bool ServoUnityWindowGL::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback, const std::string& userAgent)
 {
-    if (!ServoUnityWindow::init(windowCreatedCallback, windowResizedCallback, browserEventCallback)) return false;
+    if (!ServoUnityWindow::init(windowCreatedCallback, windowResizedCallback, browserEventCallback, userAgent)) return false;
     
 	if (m_windowCreatedCallback) (*m_windowCreatedCallback)(m_uidExt, m_uid, m_size.w, m_size.h, m_format);
 
@@ -75,10 +75,11 @@ void* ServoUnityWindowGL::nativePtr() {
 	return (void *)((uintptr_t)m_texID); // Extension to pointer-length (usually 64 bits) is the desired behaviour.
 }
 
-void ServoUnityWindowGL::initRenderer(CInitOptions cio, void (*wakeup)(void), CHostCallbacks chc) {
+bool ServoUnityWindowGL::initRenderer(CInitOptions cio, void (*wakeup)(void), CHostCallbacks chc) {
     // init_with_gl will capture the active GL context for later use by fill_gl_texture.
     // This will be the Unity GL context.
     init_with_gl(cio, wakeup, chc);
+	return true;
 }
 
 void ServoUnityWindowGL::requestUpdate(float timeDelta) {

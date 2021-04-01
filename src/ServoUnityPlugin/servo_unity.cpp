@@ -277,7 +277,7 @@ bool servoUnityRequestNewWindow(int uidExt, int widthPixelsRequested, int height
 		SERVOUNITYLOGe("Cannot create window. Unknown/unsupported render type detected.\n");
 	}
 	auto inserted = s_windows.emplace(window->uid(), move(window));
-	if (!inserted.second || !inserted.first->second->init(m_windowCreatedCallback, m_windowResizedCallback, m_browserEventCallback, m_userAgent)) {
+	if (!inserted.second || !inserted.first->second->init(m_windowCreatedCallback, m_windowResizedCallback, m_browserEventCallback, m_userAgent ? std::string(m_userAgent) : std::string())) {
 		SERVOUNITYLOGe("Error initing window.\n");
 		return false;
 	}

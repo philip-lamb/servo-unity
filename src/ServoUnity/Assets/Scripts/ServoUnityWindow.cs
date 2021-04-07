@@ -158,7 +158,7 @@ public class ServoUnityWindow : ServoUnityPointableSurface
         _textureFormat = format;
         _videoTexture = CreateWindowTexture(videoSize.x, videoSize.y, _textureFormat, out textureScaleU, out textureScaleV);
         _videoMeshGO = ServoUnityTextureUtils.Create2DVideoSurface(_videoTexture, textureScaleU, textureScaleV, Width, Height,
-            0, flipX, flipY, ServoUnityTextureUtils.VideoSurfaceColliderType.Box);
+            0, flipX, flipY, ServoUnityTextureUtils.VideoSurfaceColliderType.Mesh);
         _videoMeshGO.transform.parent = this.gameObject.transform;
         _videoMeshGO.transform.localPosition = Vector3.zero;
         _videoMeshGO.transform.localRotation = Quaternion.identity;
@@ -169,6 +169,8 @@ public class ServoUnityWindow : ServoUnityPointableSurface
 
     public void WasResized(int widthPixels, int heightPixels)
     {
+        Debug.Log("ServoUnityWindow.WasResized(widthPixels:" + widthPixels +
+                  ", heightPixels:" + heightPixels + ")");
         if (_windowIndex == 0) return;
         Height = (Width / widthPixels) * heightPixels;
         videoSize = new Vector2Int(widthPixels, heightPixels);

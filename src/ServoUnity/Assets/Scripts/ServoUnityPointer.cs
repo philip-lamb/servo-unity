@@ -114,8 +114,11 @@ public class ServoUnityPointer : MonoBehaviour
     {
         // Send a pointer exit event if required.
         if (previousContact) {
-            ServoUnityPointableSurface sups = previousContact.gameObject.GetComponentInParent(typeof(ServoUnityPointableSurface)) as ServoUnityPointableSurface;
-            sups.PointerExit();
+            ServoUnityPointableSurface sups = previousContact.gameObject.GetComponentInParent(typeof(ServoUnityPointableSurface)) as ServoUnityPointableSurface; // Uses GetComponentInParent rather than GetComponent since the MeshCollider is created on VideoSurface, which is a child object of the PointableSurface.
+            if (sups != null) // Might be null if the VideoSurface has already been destroyed.
+            {
+                sups.PointerExit();
+            }
 
             PointerEventArgs args = new PointerEventArgs();
             args.flags = 0;
@@ -205,8 +208,11 @@ public class ServoUnityPointer : MonoBehaviour
 
         if (previousContact && (!bHit || previousContact != hit.transform))
         {
-            ServoUnityPointableSurface sups = previousContact.gameObject.GetComponentInParent(typeof(ServoUnityPointableSurface)) as ServoUnityPointableSurface;
-            sups.PointerExit();
+            ServoUnityPointableSurface sups = previousContact.gameObject.GetComponentInParent(typeof(ServoUnityPointableSurface)) as ServoUnityPointableSurface; // Uses GetComponentInParent rather than GetComponent since the MeshCollider is created on VideoSurface, which is a child object of the PointableSurface.
+            if (sups != null)
+            {
+                sups.PointerExit();
+            }
 
             PointerEventArgs args = new PointerEventArgs();
             args.flags = 0;
@@ -230,7 +236,7 @@ public class ServoUnityPointer : MonoBehaviour
             reticle.transform.position = hit.point;
             reticle.transform.rotation = Quaternion.LookRotation(-hit.normal);
 
-            ServoUnityPointableSurface sups = hit.transform.gameObject.GetComponentInParent(typeof(ServoUnityPointableSurface)) as ServoUnityPointableSurface;
+            ServoUnityPointableSurface sups = hit.transform.gameObject.GetComponentInParent(typeof(ServoUnityPointableSurface)) as ServoUnityPointableSurface; // Uses GetComponentInParent rather than GetComponent since the MeshCollider is created on VideoSurface, which is a child object of the PointableSurface.
 
             if (previousContact != hit.transform)
             {

@@ -58,7 +58,7 @@ public class ServoUnityIME : MonoBehaviour
             bool inputFieldActive = false;
             foreach (UnityEngine.UI.InputField inputField in inputFields)
             {
-                if (inputField.IsActive())
+                if (inputField.isFocused)
                 {
                     inputFieldActive = true;
                     break;

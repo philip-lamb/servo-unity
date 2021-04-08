@@ -176,12 +176,21 @@ SERVO_UNITY_EXTERN void servoUnityFlushLog(void);
 
 ///
 /// Gets the plugin version as a C string, such as "1.0".
+/// <remarks>This may be called at any time, including prior to calling servoUnityInit.</remarks>
 /// @param buffer	The character buffer to populate
 /// @param length	The maximum number of characters to set in buffer
 /// @return			true if successful, false if an error occurred
 ///
 SERVO_UNITY_EXTERN bool servoUnityGetVersion(char *buffer, int length);
 
+///
+/// Initialise the native plugin.
+/// <remarks>Should be called on the main Unity thread.</remarks>
+/// <param name="windowCreatedCallback">The supplied callback will be invoked when the native representation of a new window has been created.</param>
+/// <param name="windowResizedCallback">>The supplied callback will be invoked when the native representation of a window has been resized. </param>
+/// <param name="browserEventCallback">>The supplied callback will be invoked when a browser event has occured.</param>
+/// <param name="userAgent">A null-terminated C string containing the user agent string to use in the browser, or NULL or an empty string to use the default.</param>
+///
 SERVO_UNITY_EXTERN void servoUnityInit(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback, const char *userAgent);
 
 SERVO_UNITY_EXTERN void servoUnityFinalise(void);
@@ -293,6 +302,15 @@ SERVO_UNITY_EXTERN bool servoUnityCloseWindow(int windowIndex);
 
 SERVO_UNITY_EXTERN bool servoUnityCloseAllWindows(void);
 
+///
+/// Call this function to service any browser event callbacks that must run on the main Unity thread.
+/// <remarks>Since the native side does not have access to the Unity event loop, callback events
+/// that should occur on the main Unity thread are instead queued, and must be periodically
+/// serviced by invoking this function. The function does not return until all pending events
+/// have been serviced.</remarks>
+/// </summary>
+/// <param name="windowIndex"></param>
+///
 SERVO_UNITY_EXTERN void servoUnityServiceWindowEvents(int windowIndex);
 
 SERVO_UNITY_EXTERN void servoUnityGetWindowMetadata(int windowIndex, char *titleBuf, int titleBufLen, char *urlBuf, int urlBufLen);
@@ -341,9 +359,8 @@ enum {
     ServoUnityPointerEventMouseButtonID_Max
 };
 
-/// <summary>
+///
 /// Send a pointer event to Servo.
-/// </summary>
 /// <param name="windowIndex"></param>
 /// <param name="eventID">A pointer event ID, from the enum ServoUnityPointerEventID_*.</param>
 /// <param name="eventParam0"> For ServoUnityPointerEventID_Press, ServoUnityPointerEventID_Release, and ServoUnityPointerEventID_Click,
@@ -355,7 +372,7 @@ enum {
 /// <param name="eventParam1"></param>
 /// <param name="windowX">Window x coordinate at which the event occured.</param>
 /// <param name="windowY">Window y coordinate at which the event occured.</param>
-/// <returns></returns>
+///
 SERVO_UNITY_EXTERN void servoUnityWindowPointerEvent(int windowIndex, int eventID, int eventParam0, int eventParam1, int windowX, int windowY);
 
 enum {

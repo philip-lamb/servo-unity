@@ -88,7 +88,10 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
     ServoUnityWindow::requestUpdate(timeDelta);
         
     // fill_gl_texture sets the GL context to the same Unity GL context.
-    fill_gl_texture(m_texID, m_size.w, m_size.h);
+	if (!fill_gl_texture(m_texID, m_size.w, m_size.h)) {
+		SERVOUNITYLOGd("ServoUnityWindowGL::requestUpdate no buffer pending.\n");
+		return;
+	}
 }
 
 #endif // SUPPORT_OPENGL_CORE

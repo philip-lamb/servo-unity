@@ -37,10 +37,13 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
-#include <angle_windowsstore.h>
+#if WINDOWS_UWP
+#  include <angle_windowsstore.h>
+#endif
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <EGL/eglplatform.h>
+#include <EGL/eglext_angle.h>
 #include <d3d11.h>
 #include <GLES2/gl2.h>
 

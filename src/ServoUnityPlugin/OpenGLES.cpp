@@ -39,6 +39,11 @@
 #include "OpenGLES.h"
 #include "servo_unity_log.h"
 #include <wrl/client.h> // ComPtr
+#ifdef _WIN32
+#  if !WINDOWS_UWP
+#    include "util/egl_loader_autogen.h"
+#  endif
+#endif
 
 OpenGLES::OpenGLES() :
     mEglConfig(nullptr), mEglDisplay(EGL_NO_DISPLAY),
@@ -102,7 +107,7 @@ bool OpenGLES::Initialize() {
 
     // This tries to initialize EGL to D3D11 Feature Level 10_0+. See above
     // comment for details.
-    mEglDisplay = eglGetPlatformDisplayEXT( EGL_PLATFORM_ANGLE_ANGLE, EGL_DEFAULT_DISPLAY, defaultDisplayAttributes);
+    mEglDisplay = eglGetPlatformDisplayEXT(EGL_PLATFORM_ANGLE_ANGLE, EGL_DEFAULT_DISPLAY, defaultDisplayAttributes);
     if (mEglDisplay == EGL_NO_DISPLAY) {
         SERVOUNITYLOGe("OpenGLES::Initialize: Failed to get EGL display.\n");
         return false;

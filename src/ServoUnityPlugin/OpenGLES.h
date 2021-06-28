@@ -1,6 +1,7 @@
 // Copyright (C) 2002-2013 The ANGLE Project Authors. 
 // Portions Copyright (C) Microsoft Corporation.
 // Portions Copyright (C) Kazendi, Ltd.
+// Portions Copyright (C) Eden Networks Ltd.
 //
 // BSD License
 //
@@ -37,8 +38,12 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
-#if WINDOWS_UWP
-#  include <angle_windowsstore.h>
+#if defined(_WIN32)
+#  if WINDOWS_UWP
+#    include <angle_windowsstore.h>
+#  else
+#    define EGL_EGL_PROTOTYPES 1
+#  endif
 #endif
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -54,11 +59,11 @@ public:
     bool Initialize();
     EGLSurface CreateSurface(ID3D11Texture2D* tex2D);
     void GetSurfaceDimensions(const EGLSurface surface, EGLint* width, EGLint* height);
-    void DestroySurface(const EGLSurface surface);
+    void DestroySurface(EGLSurface* surface);
     void MakeCurrent(const EGLSurface surface);
     EGLBoolean SwapBuffers(const EGLSurface surface);
     GLuint CreateSurfaceTexture(const EGLSurface surface);
-    void DestroySurfaceTexture(const GLuint texID, const EGLSurface surface);
+    void DestroySurfaceTexture(GLuint* texID, const EGLSurface surface);
     void Reset();
     void Cleanup();
 

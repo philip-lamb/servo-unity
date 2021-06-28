@@ -131,15 +131,24 @@ bool ServoUnityWindowDX11::initRenderer(CInitOptions cio, void (*wakeup)(void), 
 	// Set up EGL context.
 	if (!m_GLES.Initialize()) {
 		SERVOUNITYLOGe("Unable to initialise EGL.\n");
+		m_servoTexPtr->Release();
 		return false;
 	}
 	if ((m_EGLSurface = m_GLES.CreateSurface(m_servoTexPtr)) == EGL_NO_SURFACE) {
 		SERVOUNITYLOGe("Unable to create EGL surface.\n");
+		m_GLES.Cleanup();
+		m_servoTexPtr->Release();
 		return false;
 	}
 	m_GLES.MakeCurrent(m_EGLSurface);
 
-	m_texID = m_GLES.CreateSurfaceTexture(m_EGLSurface);
+	if ((m_texID = m_GLES.CreateSurfaceTexture(m_EGLSurface)) == 0) {
+		SERVOUNITYLOGe("Unable to create surface texture.\n");
+		m_GLES.DestroySurface(&m_EGLSurface);
+		m_GLES.Cleanup();
+		m_servoTexPtr->Release();
+		return false;
+	};
 
     // init_with_egl will capture the active EGL context for later use by fill_gl_texture.
     // This will be the Unity EGL context.
@@ -149,12 +158,10 @@ bool ServoUnityWindowDX11::initRenderer(CInitOptions cio, void (*wakeup)(void), 
 
 void ServoUnityWindowDX11::cleanupRenderer()
 {
-	m_GLES.DestroySurfaceTexture(m_texID, m_EGLSurface);
-	m_texID = 0;
-	m_GLES.DestroySurface(m_EGLSurface);
-	m_EGLSurface = EGL_NO_SURFACE;
+	m_GLES.DestroySurfaceTexture(&m_texID, m_EGLSurface);
+	m_GLES.DestroySurface(&m_EGLSurface);
 	m_GLES.Cleanup();
-	// TODO: Also clean up DirectX textures.
+	m_servoTexPtr->Release();
 
 	ServoUnityWindow::cleanupRenderer();
 }

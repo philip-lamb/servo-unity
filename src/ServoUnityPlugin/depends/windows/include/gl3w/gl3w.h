@@ -1,6 +1,9 @@
 #ifndef __gl3w_h_
 #define __gl3w_h_
 
+#include "servo_unity_c.h"
+#if SUPPORT_OPENGL_CORE
+
 #include "glcorearb.h"
 
 #ifndef __gl_h_
@@ -1230,5 +1233,7 @@ extern PFNGLTEXTURESTORAGE3DMULTISAMPLEEXTPROC gl3wTextureStorage3DMultisampleEX
 #ifdef __cplusplus
 }
 #endif
+
+#endif // SUPPORT_OPENGL_CORE
 
 #endif

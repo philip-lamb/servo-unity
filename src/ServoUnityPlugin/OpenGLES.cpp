@@ -1,6 +1,7 @@
 // Copyright (C) 2002-2013 The ANGLE Project Authors. 
 // Portions Copyright (C) Microsoft Corporation.
 // Portions Copyright (C) Kazendi, Ltd.
+// Portions Copyright (C) Eden Networks Ltd.
 //
 // BSD License
 //
@@ -39,11 +40,6 @@
 #include "OpenGLES.h"
 #include "servo_unity_log.h"
 #include <wrl/client.h> // ComPtr
-#ifdef _WIN32
-#  if !WINDOWS_UWP
-#    include "util/egl_loader_autogen.h"
-#  endif
-#endif
 
 OpenGLES::OpenGLES() :
     mEglConfig(nullptr), mEglDisplay(EGL_NO_DISPLAY),
@@ -180,16 +176,20 @@ bool OpenGLES::Initialize() {
     EGLint numConfigs = 0;
     if ((eglChooseConfig(mEglDisplay, configAttributes, &mEglConfig, 1, &numConfigs) == EGL_FALSE) || (numConfigs == 0)) {
         SERVOUNITYLOGe("OpenGLES::Initialize: Failed to choose first EGLConfig.\n");
-        return false;
+    }  else {
+
+        mEglContext = eglCreateContext(mEglDisplay, mEglConfig, EGL_NO_CONTEXT, contextAttributes);
+        if (mEglContext == EGL_NO_CONTEXT) {
+            SERVOUNITYLOGe("OpenGLES::Initialize: Failed to create EGL context.\n");
+        } else {
+            return true;
+        }
     }
 
-    mEglContext = eglCreateContext(mEglDisplay, mEglConfig, EGL_NO_CONTEXT, contextAttributes);
-    if (mEglContext == EGL_NO_CONTEXT) {
-        SERVOUNITYLOGe("OpenGLES::Initialize: Failed to create EGL context.\n");
-        return false;
-    }
-
-    return true;
+    // Cleanup after init errors.
+    eglTerminate(mEglDisplay);
+    mEglDisplay = EGL_NO_DISPLAY;
+    return false;
 }
 
 void OpenGLES::Cleanup() {
@@ -266,15 +266,19 @@ void OpenGLES::GetSurfaceDimensions(const EGLSurface surface, EGLint* width, EGL
     eglQuerySurface(mEglDisplay, surface, EGL_HEIGHT, height);
 }
 
-void OpenGLES::DestroySurface(const EGLSurface surface)
+void OpenGLES::DestroySurface(EGLSurface* surface_p)
 {
-    if (mEglDisplay != EGL_NO_DISPLAY && surface != EGL_NO_SURFACE) {
-        eglDestroySurface(mEglDisplay, surface);
+    if (mEglDisplay == EGL_NO_DISPLAY || !surface_p || *surface_p == EGL_NO_SURFACE) {
+        return;
     }
+
+    eglDestroySurface(mEglDisplay, *surface_p);
+    *surface_p = EGL_NO_SURFACE;
 }
 
 void OpenGLES::MakeCurrent(const EGLSurface surface)
 {
+    // The first time this is called for any given context, implicit glViewport(0,0,w,h) and glScissor(0,0,w,h) calls are made.
     if (eglMakeCurrent(mEglDisplay, surface, surface, mEglContext) == EGL_FALSE) {
         SERVOUNITYLOGe("Failed to make EGL surface current");
     }
@@ -289,6 +293,11 @@ GLuint OpenGLES::CreateSurfaceTexture(const EGLSurface surface)
 {
     GLuint glTex;
     glGenTextures(1, &glTex);
+    GLenum err;
+    if ((err = glGetError()) != GL_NO_ERROR) {
+        SERVOUNITYLOGe("Unable to generate GL texture: GL error 0x%04x.\n", err);
+        return 0;
+    }
     glBindTexture(GL_TEXTURE_2D, glTex);
     if (!eglBindTexImage(mEglDisplay, surface, EGL_BACK_BUFFER)) { // https://www.khronos.org/registry/EGL/sdk/docs/man/html/eglBindTexImage.xhtml
         SERVOUNITYLOGe("Unable to bind surface to texture.");
@@ -301,9 +310,14 @@ GLuint OpenGLES::CreateSurfaceTexture(const EGLSurface surface)
     return glTex;
 }
 
-void OpenGLES::DestroySurfaceTexture(const GLuint texID, const EGLSurface surface)
+void OpenGLES::DestroySurfaceTexture(GLuint* texID_p, const EGLSurface surface)
 {
+    if (mEglDisplay == EGL_NO_DISPLAY || !texID_p || *texID_p == 0 || surface == EGL_NO_SURFACE) {
+        return;
+    }
+
     eglReleaseTexImage(mEglDisplay, surface, EGL_BACK_BUFFER);
     glBindTexture(GL_TEXTURE_2D, 0);
-    glDeleteTextures(1, &texID);
+    glDeleteTextures(1, texID_p);
+    *texID_p = 0;
 }

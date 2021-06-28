@@ -1,5 +1,7 @@
 #include "gl3w.h"
 
+#if SUPPORT_OPENGL_CORE
+
 #ifdef _MSC_VER
 #pragma warning (disable: 4055) // warning C4055: 'type cast' : from data pointer 'void *' to function pointer
 #pragma warning (disable: 4152) // warning C4152: nonstandard extension, function/data pointer conversion in expression
@@ -1342,3 +1344,5 @@ static void load_procs(void)
 	gl3wTextureStorage2DMultisampleEXT = (PFNGLTEXTURESTORAGE2DMULTISAMPLEEXTPROC) get_proc("glTextureStorage2DMultisampleEXT");
 	gl3wTextureStorage3DMultisampleEXT = (PFNGLTEXTURESTORAGE3DMULTISAMPLEEXTPROC) get_proc("glTextureStorage3DMultisampleEXT");
 }
+
+#endif // SUPPORT_OPENGL_CORE

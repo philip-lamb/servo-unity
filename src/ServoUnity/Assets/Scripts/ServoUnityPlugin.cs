@@ -88,7 +88,7 @@ public class ServoUnityPlugin
         windowResizedCallbackGCH = GCHandle.Alloc(windowResizedCallback);
         browserEventCallbackGCH = GCHandle.Alloc(browserEventCallback);
         
-        ServoUnityPlugin_pinvoke.servoUnityInit(windowCreatedCallback, windowResizedCallback, browserEventCallback, userAgent);
+        ServoUnityPlugin_pinvoke.servoUnityInit(windowCreatedCallback, windowResizedCallback, browserEventCallback, userAgent, null);
     }
 
     public void ServoUnityFinalise()

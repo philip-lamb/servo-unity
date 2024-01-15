@@ -190,8 +190,9 @@ SERVO_UNITY_EXTERN bool servoUnityGetVersion(char *buffer, int length);
 /// <param name="windowResizedCallback">>The supplied callback will be invoked when the native representation of a window has been resized. </param>
 /// <param name="browserEventCallback">>The supplied callback will be invoked when a browser event has occured.</param>
 /// <param name="userAgent">A null-terminated C string containing the user agent string to use in the browser, or NULL or an empty string to use the default.</param>
+/// <param name="pluginPathOverride">A null-terminated C string containing an override path at which to find GStreamer plugins, or NULL to use the default.</param>
 ///
-SERVO_UNITY_EXTERN void servoUnityInit(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback, const char *userAgent);
+SERVO_UNITY_EXTERN void servoUnityInit(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback, const char *userAgent, const char *pluginPathOverride);
 
 SERVO_UNITY_EXTERN void servoUnityFinalise(void);
 

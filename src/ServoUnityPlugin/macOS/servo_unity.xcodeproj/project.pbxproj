@@ -9,20 +9,147 @@
 /* Begin PBXBuildFile section */
 		4A060D612581E4000071B40E /* ServoUnityWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A060D602581E4000071B40E /* ServoUnityWindow.cpp */; };
 		4A49CC1624690FC400B77CCA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A49CC1524690FC400B77CCA /* OpenGL.framework */; };
+		4A6CF0D7268D84A000FA76E6 /* libsimpleservo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A6CF0D6268D84A000FA76E6 /* libsimpleservo2.dylib */; };
+		4A6CF0FE268D84EA00FA76E6 /* libsimpleservo2.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0D6268D84A000FA76E6 /* libsimpleservo2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF0FF268D84EA00FA76E6 /* libgstapp.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0EE268D84B000FA76E6 /* libgstapp.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF100268D84EA00FA76E6 /* libgstaudiobuffersplit.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0E2268D84AF00FA76E6 /* libgstaudiobuffersplit.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF101268D84EA00FA76E6 /* libgstaudioconvert.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0EC268D84B000FA76E6 /* libgstaudioconvert.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF102268D84EA00FA76E6 /* libgstaudiofx.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0F4268D84B000FA76E6 /* libgstaudiofx.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF103268D84EA00FA76E6 /* libgstaudioparsers.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0E3268D84AF00FA76E6 /* libgstaudioparsers.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF104268D84EA00FA76E6 /* libgstaudioresample.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0F3268D84B000FA76E6 /* libgstaudioresample.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF105268D84EA00FA76E6 /* libgstautodetect.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0DA268D84AF00FA76E6 /* libgstautodetect.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF106268D84EA00FA76E6 /* libgstcoreelements.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0D8268D84AF00FA76E6 /* libgstcoreelements.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF107268D84EA00FA76E6 /* libgstdeinterlace.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0EB268D84B000FA76E6 /* libgstdeinterlace.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF108268D84EA00FA76E6 /* libgstdtls.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0EA268D84B000FA76E6 /* libgstdtls.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF109268D84EA00FA76E6 /* libgstgio.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0F8268D84B000FA76E6 /* libgstgio.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF10A268D84EA00FA76E6 /* libgstid3demux.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0E0268D84AF00FA76E6 /* libgstid3demux.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF10B268D84EA00FA76E6 /* libgstid3tag.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0EF268D84B000FA76E6 /* libgstid3tag.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF10C268D84EA00FA76E6 /* libgstinterleave.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0DF268D84AF00FA76E6 /* libgstinterleave.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF10D268D84EA00FA76E6 /* libgstisomp4.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0FC268D84B000FA76E6 /* libgstisomp4.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF10E268D84EA00FA76E6 /* libgstlibav.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0F0268D84B000FA76E6 /* libgstlibav.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF10F268D84EA00FA76E6 /* libgstmatroska.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0F7268D84B000FA76E6 /* libgstmatroska.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF110268D84EA00FA76E6 /* libgstnice.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0E8268D84AF00FA76E6 /* libgstnice.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF111268D84EA00FA76E6 /* libgstogg.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0ED268D84B000FA76E6 /* libgstogg.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF112268D84EA00FA76E6 /* libgstopengl.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0F2268D84B000FA76E6 /* libgstopengl.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF113268D84EA00FA76E6 /* libgstopus.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0DD268D84AF00FA76E6 /* libgstopus.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF114268D84EA00FA76E6 /* libgstosxaudio.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0E7268D84AF00FA76E6 /* libgstosxaudio.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF115268D84EA00FA76E6 /* libgstosxvideo.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0E9268D84B000FA76E6 /* libgstosxvideo.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF116268D84EA00FA76E6 /* libgstplayback.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0E1268D84AF00FA76E6 /* libgstplayback.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF117268D84EA00FA76E6 /* libgstproxy.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0DC268D84AF00FA76E6 /* libgstproxy.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF118268D84EA00FA76E6 /* libgstrtp.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0DE268D84AF00FA76E6 /* libgstrtp.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF119268D84EA00FA76E6 /* libgstrtpmanager.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0FA268D84B000FA76E6 /* libgstrtpmanager.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF11A268D84EA00FA76E6 /* libgsttheora.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0E5268D84AF00FA76E6 /* libgsttheora.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF11B268D84EA00FA76E6 /* libgsttypefindfunctions.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0F5268D84B000FA76E6 /* libgsttypefindfunctions.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF11C268D84EA00FA76E6 /* libgstvideoconvert.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0D9268D84AF00FA76E6 /* libgstvideoconvert.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF11D268D84EA00FA76E6 /* libgstvideofilter.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0F1268D84B000FA76E6 /* libgstvideofilter.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF11E268D84EA00FA76E6 /* libgstvideoparsersbad.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0F9268D84B000FA76E6 /* libgstvideoparsersbad.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF11F268D84EA00FA76E6 /* libgstvideoscale.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0F6268D84B000FA76E6 /* libgstvideoscale.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF120268D84EA00FA76E6 /* libgstvolume.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0E4268D84AF00FA76E6 /* libgstvolume.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF121268D84EA00FA76E6 /* libgstvorbis.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0DB268D84AF00FA76E6 /* libgstvorbis.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF122268D84EA00FA76E6 /* libgstvpx.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0FB268D84B000FA76E6 /* libgstvpx.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4A6CF123268D84EA00FA76E6 /* libgstwebrtc.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4A6CF0E6268D84AF00FA76E6 /* libgstwebrtc.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		4A92A8172464FBE000E47295 /* ServoUnityWindowDX11.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8102464FBE000E47295 /* ServoUnityWindowDX11.cpp */; };
 		4A92A8182464FBE000E47295 /* servo_unity_log.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8112464FBE000E47295 /* servo_unity_log.c */; };
 		4A92A8192464FBE000E47295 /* ServoUnityWindowGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8122464FBE000E47295 /* ServoUnityWindowGL.cpp */; };
 		4A92A81A2464FBE000E47295 /* servo_unity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8142464FBE000E47295 /* servo_unity.cpp */; };
 		4A94C56E24BFAA5500BA301C /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A94C56D24BFAA5500BA301C /* utils.c */; };
-		4A9AA0F724A5D584001948F6 /* libsimpleservo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A64971924A2E2AC006447CA /* libsimpleservo2.dylib */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4A6CF0FD268D84CF00FA76E6 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				4A6CF0FE268D84EA00FA76E6 /* libsimpleservo2.dylib in CopyFiles */,
+				4A6CF0FF268D84EA00FA76E6 /* libgstapp.dylib in CopyFiles */,
+				4A6CF100268D84EA00FA76E6 /* libgstaudiobuffersplit.dylib in CopyFiles */,
+				4A6CF101268D84EA00FA76E6 /* libgstaudioconvert.dylib in CopyFiles */,
+				4A6CF102268D84EA00FA76E6 /* libgstaudiofx.dylib in CopyFiles */,
+				4A6CF103268D84EA00FA76E6 /* libgstaudioparsers.dylib in CopyFiles */,
+				4A6CF104268D84EA00FA76E6 /* libgstaudioresample.dylib in CopyFiles */,
+				4A6CF105268D84EA00FA76E6 /* libgstautodetect.dylib in CopyFiles */,
+				4A6CF106268D84EA00FA76E6 /* libgstcoreelements.dylib in CopyFiles */,
+				4A6CF107268D84EA00FA76E6 /* libgstdeinterlace.dylib in CopyFiles */,
+				4A6CF108268D84EA00FA76E6 /* libgstdtls.dylib in CopyFiles */,
+				4A6CF109268D84EA00FA76E6 /* libgstgio.dylib in CopyFiles */,
+				4A6CF10A268D84EA00FA76E6 /* libgstid3demux.dylib in CopyFiles */,
+				4A6CF10B268D84EA00FA76E6 /* libgstid3tag.dylib in CopyFiles */,
+				4A6CF10C268D84EA00FA76E6 /* libgstinterleave.dylib in CopyFiles */,
+				4A6CF10D268D84EA00FA76E6 /* libgstisomp4.dylib in CopyFiles */,
+				4A6CF10E268D84EA00FA76E6 /* libgstlibav.dylib in CopyFiles */,
+				4A6CF10F268D84EA00FA76E6 /* libgstmatroska.dylib in CopyFiles */,
+				4A6CF110268D84EA00FA76E6 /* libgstnice.dylib in CopyFiles */,
+				4A6CF111268D84EA00FA76E6 /* libgstogg.dylib in CopyFiles */,
+				4A6CF112268D84EA00FA76E6 /* libgstopengl.dylib in CopyFiles */,
+				4A6CF113268D84EA00FA76E6 /* libgstopus.dylib in CopyFiles */,
+				4A6CF114268D84EA00FA76E6 /* libgstosxaudio.dylib in CopyFiles */,
+				4A6CF115268D84EA00FA76E6 /* libgstosxvideo.dylib in CopyFiles */,
+				4A6CF116268D84EA00FA76E6 /* libgstplayback.dylib in CopyFiles */,
+				4A6CF117268D84EA00FA76E6 /* libgstproxy.dylib in CopyFiles */,
+				4A6CF118268D84EA00FA76E6 /* libgstrtp.dylib in CopyFiles */,
+				4A6CF119268D84EA00FA76E6 /* libgstrtpmanager.dylib in CopyFiles */,
+				4A6CF11A268D84EA00FA76E6 /* libgsttheora.dylib in CopyFiles */,
+				4A6CF11B268D84EA00FA76E6 /* libgsttypefindfunctions.dylib in CopyFiles */,
+				4A6CF11C268D84EA00FA76E6 /* libgstvideoconvert.dylib in CopyFiles */,
+				4A6CF11D268D84EA00FA76E6 /* libgstvideofilter.dylib in CopyFiles */,
+				4A6CF11E268D84EA00FA76E6 /* libgstvideoparsersbad.dylib in CopyFiles */,
+				4A6CF11F268D84EA00FA76E6 /* libgstvideoscale.dylib in CopyFiles */,
+				4A6CF120268D84EA00FA76E6 /* libgstvolume.dylib in CopyFiles */,
+				4A6CF121268D84EA00FA76E6 /* libgstvorbis.dylib in CopyFiles */,
+				4A6CF122268D84EA00FA76E6 /* libgstvpx.dylib in CopyFiles */,
+				4A6CF123268D84EA00FA76E6 /* libgstwebrtc.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		4A060D602581E4000071B40E /* ServoUnityWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ServoUnityWindow.cpp; path = ../ServoUnityWindow.cpp; sourceTree = "<group>"; };
 		4A33AC0F247DFEFC00915C58 /* simpleservo2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = simpleservo2.h; path = ../simpleservo2.h; sourceTree = "<group>"; };
 		4A49CC1524690FC400B77CCA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		4A609D0524C559060079D8A1 /* servo_unity_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = servo_unity_internal.h; path = ../servo_unity_internal.h; sourceTree = "<group>"; };
-		4A64971924A2E2AC006447CA /* libsimpleservo2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsimpleservo2.dylib; path = ../../ServoUnity/Assets/Plugins/libsimpleservo2.dylib; sourceTree = "<group>"; };
+		4A6CF0D6268D84A000FA76E6 /* libsimpleservo2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsimpleservo2.dylib; path = ../../depends/macos/lib/libsimpleservo2.dylib; sourceTree = "<group>"; };
+		4A6CF0D8268D84AF00FA76E6 /* libgstcoreelements.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstcoreelements.dylib; path = ../../depends/macos/lib/libgstcoreelements.dylib; sourceTree = "<group>"; };
+		4A6CF0D9268D84AF00FA76E6 /* libgstvideoconvert.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstvideoconvert.dylib; path = ../../depends/macos/lib/libgstvideoconvert.dylib; sourceTree = "<group>"; };
+		4A6CF0DA268D84AF00FA76E6 /* libgstautodetect.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstautodetect.dylib; path = ../../depends/macos/lib/libgstautodetect.dylib; sourceTree = "<group>"; };
+		4A6CF0DB268D84AF00FA76E6 /* libgstvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstvorbis.dylib; path = ../../depends/macos/lib/libgstvorbis.dylib; sourceTree = "<group>"; };
+		4A6CF0DC268D84AF00FA76E6 /* libgstproxy.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstproxy.dylib; path = ../../depends/macos/lib/libgstproxy.dylib; sourceTree = "<group>"; };
+		4A6CF0DD268D84AF00FA76E6 /* libgstopus.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstopus.dylib; path = ../../depends/macos/lib/libgstopus.dylib; sourceTree = "<group>"; };
+		4A6CF0DE268D84AF00FA76E6 /* libgstrtp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstrtp.dylib; path = ../../depends/macos/lib/libgstrtp.dylib; sourceTree = "<group>"; };
+		4A6CF0DF268D84AF00FA76E6 /* libgstinterleave.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstinterleave.dylib; path = ../../depends/macos/lib/libgstinterleave.dylib; sourceTree = "<group>"; };
+		4A6CF0E0268D84AF00FA76E6 /* libgstid3demux.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstid3demux.dylib; path = ../../depends/macos/lib/libgstid3demux.dylib; sourceTree = "<group>"; };
+		4A6CF0E1268D84AF00FA76E6 /* libgstplayback.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstplayback.dylib; path = ../../depends/macos/lib/libgstplayback.dylib; sourceTree = "<group>"; };
+		4A6CF0E2268D84AF00FA76E6 /* libgstaudiobuffersplit.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstaudiobuffersplit.dylib; path = ../../depends/macos/lib/libgstaudiobuffersplit.dylib; sourceTree = "<group>"; };
+		4A6CF0E3268D84AF00FA76E6 /* libgstaudioparsers.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstaudioparsers.dylib; path = ../../depends/macos/lib/libgstaudioparsers.dylib; sourceTree = "<group>"; };
+		4A6CF0E4268D84AF00FA76E6 /* libgstvolume.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstvolume.dylib; path = ../../depends/macos/lib/libgstvolume.dylib; sourceTree = "<group>"; };
+		4A6CF0E5268D84AF00FA76E6 /* libgsttheora.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgsttheora.dylib; path = ../../depends/macos/lib/libgsttheora.dylib; sourceTree = "<group>"; };
+		4A6CF0E6268D84AF00FA76E6 /* libgstwebrtc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstwebrtc.dylib; path = ../../depends/macos/lib/libgstwebrtc.dylib; sourceTree = "<group>"; };
+		4A6CF0E7268D84AF00FA76E6 /* libgstosxaudio.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstosxaudio.dylib; path = ../../depends/macos/lib/libgstosxaudio.dylib; sourceTree = "<group>"; };
+		4A6CF0E8268D84AF00FA76E6 /* libgstnice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstnice.dylib; path = ../../depends/macos/lib/libgstnice.dylib; sourceTree = "<group>"; };
+		4A6CF0E9268D84B000FA76E6 /* libgstosxvideo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstosxvideo.dylib; path = ../../depends/macos/lib/libgstosxvideo.dylib; sourceTree = "<group>"; };
+		4A6CF0EA268D84B000FA76E6 /* libgstdtls.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstdtls.dylib; path = ../../depends/macos/lib/libgstdtls.dylib; sourceTree = "<group>"; };
+		4A6CF0EB268D84B000FA76E6 /* libgstdeinterlace.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstdeinterlace.dylib; path = ../../depends/macos/lib/libgstdeinterlace.dylib; sourceTree = "<group>"; };
+		4A6CF0EC268D84B000FA76E6 /* libgstaudioconvert.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstaudioconvert.dylib; path = ../../depends/macos/lib/libgstaudioconvert.dylib; sourceTree = "<group>"; };
+		4A6CF0ED268D84B000FA76E6 /* libgstogg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstogg.dylib; path = ../../depends/macos/lib/libgstogg.dylib; sourceTree = "<group>"; };
+		4A6CF0EE268D84B000FA76E6 /* libgstapp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstapp.dylib; path = ../../depends/macos/lib/libgstapp.dylib; sourceTree = "<group>"; };
+		4A6CF0EF268D84B000FA76E6 /* libgstid3tag.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstid3tag.dylib; path = ../../depends/macos/lib/libgstid3tag.dylib; sourceTree = "<group>"; };
+		4A6CF0F0268D84B000FA76E6 /* libgstlibav.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstlibav.dylib; path = ../../depends/macos/lib/libgstlibav.dylib; sourceTree = "<group>"; };
+		4A6CF0F1268D84B000FA76E6 /* libgstvideofilter.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstvideofilter.dylib; path = ../../depends/macos/lib/libgstvideofilter.dylib; sourceTree = "<group>"; };
+		4A6CF0F2268D84B000FA76E6 /* libgstopengl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstopengl.dylib; path = ../../depends/macos/lib/libgstopengl.dylib; sourceTree = "<group>"; };
+		4A6CF0F3268D84B000FA76E6 /* libgstaudioresample.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstaudioresample.dylib; path = ../../depends/macos/lib/libgstaudioresample.dylib; sourceTree = "<group>"; };
+		4A6CF0F4268D84B000FA76E6 /* libgstaudiofx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstaudiofx.dylib; path = ../../depends/macos/lib/libgstaudiofx.dylib; sourceTree = "<group>"; };
+		4A6CF0F5268D84B000FA76E6 /* libgsttypefindfunctions.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgsttypefindfunctions.dylib; path = ../../depends/macos/lib/libgsttypefindfunctions.dylib; sourceTree = "<group>"; };
+		4A6CF0F6268D84B000FA76E6 /* libgstvideoscale.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstvideoscale.dylib; path = ../../depends/macos/lib/libgstvideoscale.dylib; sourceTree = "<group>"; };
+		4A6CF0F7268D84B000FA76E6 /* libgstmatroska.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstmatroska.dylib; path = ../../depends/macos/lib/libgstmatroska.dylib; sourceTree = "<group>"; };
+		4A6CF0F8268D84B000FA76E6 /* libgstgio.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstgio.dylib; path = ../../depends/macos/lib/libgstgio.dylib; sourceTree = "<group>"; };
+		4A6CF0F9268D84B000FA76E6 /* libgstvideoparsersbad.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstvideoparsersbad.dylib; path = ../../depends/macos/lib/libgstvideoparsersbad.dylib; sourceTree = "<group>"; };
+		4A6CF0FA268D84B000FA76E6 /* libgstrtpmanager.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstrtpmanager.dylib; path = ../../depends/macos/lib/libgstrtpmanager.dylib; sourceTree = "<group>"; };
+		4A6CF0FB268D84B000FA76E6 /* libgstvpx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstvpx.dylib; path = ../../depends/macos/lib/libgstvpx.dylib; sourceTree = "<group>"; };
+		4A6CF0FC268D84B000FA76E6 /* libgstisomp4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgstisomp4.dylib; path = ../../depends/macos/lib/libgstisomp4.dylib; sourceTree = "<group>"; };
+		4A709567268C286800393D8C /* OpenGLES.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OpenGLES.cpp; path = ../OpenGLES.cpp; sourceTree = "<group>"; };
+		4A709568268C286800393D8C /* OpenGLES.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OpenGLES.h; path = ../OpenGLES.h; sourceTree = "<group>"; };
 		4A92A8052464FB8400E47295 /* servo_unity.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = servo_unity.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A92A8082464FB8400E47295 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
 		4A92A80E2464FBE000E47295 /* servo_unity_log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = servo_unity_log.h; path = ../servo_unity_log.h; sourceTree = "<group>"; };
@@ -45,7 +172,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A49CC1624690FC400B77CCA /* OpenGL.framework in Frameworks */,
-				4A9AA0F724A5D584001948F6 /* libsimpleservo2.dylib in Frameworks */,
+				4A6CF0D7268D84A000FA76E6 /* libsimpleservo2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -55,10 +182,54 @@
 		4A49CC1424690FC400B77CCA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4A64971924A2E2AC006447CA /* libsimpleservo2.dylib */,
 				4A49CC1524690FC400B77CCA /* OpenGL.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4A6CF0D5268D80ED00FA76E6 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				4A6CF0D6268D84A000FA76E6 /* libsimpleservo2.dylib */,
+				4A6CF0EE268D84B000FA76E6 /* libgstapp.dylib */,
+				4A6CF0E2268D84AF00FA76E6 /* libgstaudiobuffersplit.dylib */,
+				4A6CF0EC268D84B000FA76E6 /* libgstaudioconvert.dylib */,
+				4A6CF0F4268D84B000FA76E6 /* libgstaudiofx.dylib */,
+				4A6CF0E3268D84AF00FA76E6 /* libgstaudioparsers.dylib */,
+				4A6CF0F3268D84B000FA76E6 /* libgstaudioresample.dylib */,
+				4A6CF0DA268D84AF00FA76E6 /* libgstautodetect.dylib */,
+				4A6CF0D8268D84AF00FA76E6 /* libgstcoreelements.dylib */,
+				4A6CF0EB268D84B000FA76E6 /* libgstdeinterlace.dylib */,
+				4A6CF0EA268D84B000FA76E6 /* libgstdtls.dylib */,
+				4A6CF0F8268D84B000FA76E6 /* libgstgio.dylib */,
+				4A6CF0E0268D84AF00FA76E6 /* libgstid3demux.dylib */,
+				4A6CF0EF268D84B000FA76E6 /* libgstid3tag.dylib */,
+				4A6CF0DF268D84AF00FA76E6 /* libgstinterleave.dylib */,
+				4A6CF0FC268D84B000FA76E6 /* libgstisomp4.dylib */,
+				4A6CF0F0268D84B000FA76E6 /* libgstlibav.dylib */,
+				4A6CF0F7268D84B000FA76E6 /* libgstmatroska.dylib */,
+				4A6CF0E8268D84AF00FA76E6 /* libgstnice.dylib */,
+				4A6CF0ED268D84B000FA76E6 /* libgstogg.dylib */,
+				4A6CF0F2268D84B000FA76E6 /* libgstopengl.dylib */,
+				4A6CF0DD268D84AF00FA76E6 /* libgstopus.dylib */,
+				4A6CF0E7268D84AF00FA76E6 /* libgstosxaudio.dylib */,
+				4A6CF0E9268D84B000FA76E6 /* libgstosxvideo.dylib */,
+				4A6CF0E1268D84AF00FA76E6 /* libgstplayback.dylib */,
+				4A6CF0DC268D84AF00FA76E6 /* libgstproxy.dylib */,
+				4A6CF0DE268D84AF00FA76E6 /* libgstrtp.dylib */,
+				4A6CF0FA268D84B000FA76E6 /* libgstrtpmanager.dylib */,
+				4A6CF0E5268D84AF00FA76E6 /* libgsttheora.dylib */,
+				4A6CF0F5268D84B000FA76E6 /* libgsttypefindfunctions.dylib */,
+				4A6CF0D9268D84AF00FA76E6 /* libgstvideoconvert.dylib */,
+				4A6CF0F1268D84B000FA76E6 /* libgstvideofilter.dylib */,
+				4A6CF0F9268D84B000FA76E6 /* libgstvideoparsersbad.dylib */,
+				4A6CF0F6268D84B000FA76E6 /* libgstvideoscale.dylib */,
+				4A6CF0E4268D84AF00FA76E6 /* libgstvolume.dylib */,
+				4A6CF0DB268D84AF00FA76E6 /* libgstvorbis.dylib */,
+				4A6CF0FB268D84B000FA76E6 /* libgstvpx.dylib */,
+				4A6CF0E6268D84AF00FA76E6 /* libgstwebrtc.dylib */,
+			);
+			path = Libraries;
 			sourceTree = "<group>";
 		};
 		4A92A7FC2464FB8400E47295 = {
@@ -79,8 +250,11 @@
 				4A33AC0F247DFEFC00915C58 /* simpleservo2.h */,
 				4A94C56C24BFAA5500BA301C /* utils.h */,
 				4A94C56D24BFAA5500BA301C /* utils.c */,
+				4A709568268C286800393D8C /* OpenGLES.h */,
+				4A709567268C286800393D8C /* OpenGLES.cpp */,
 				4A92A8082464FB8400E47295 /* Info.plist */,
 				4A92A8062464FB8400E47295 /* Products */,
+				4A6CF0D5268D80ED00FA76E6 /* Libraries */,
 				4A49CC1424690FC400B77CCA /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -103,7 +277,7 @@
 				4A0ACE1824AD83E8005CE298 /* ShellScript */,
 				4A92A8012464FB8400E47295 /* Sources */,
 				4A92A8022464FB8400E47295 /* Frameworks */,
-				4A92A8032464FB8400E47295 /* Resources */,
+				4A6CF0FD268D84CF00FA76E6 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -120,7 +294,7 @@
 		4A92A7FD2464FB8400E47295 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = "Eden Networks Ltd";
 				TargetAttributes = {
 					4A92A8042464FB8400E47295 = {
@@ -145,16 +319,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXResourcesBuildPhase section */
-		4A92A8032464FB8400E47295 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		4A0ACE1824AD83E8005CE298 /* ShellScript */ = {
@@ -247,7 +411,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /Applications/Unity/Hub/Editor/2020.3.2f1/Unity.app/Contents/PluginAPI;
-				LIBRARY_SEARCH_PATHS = ../../ServoUnity/Assets/Plugins;
+				LIBRARY_SEARCH_PATHS = ../depends/macos/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -305,7 +469,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /Applications/Unity/Hub/Editor/2020.3.2f1/Unity.app/Contents/PluginAPI;
-				LIBRARY_SEARCH_PATHS = ../../ServoUnity/Assets/Plugins;
+				LIBRARY_SEARCH_PATHS = ../depends/macos/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;

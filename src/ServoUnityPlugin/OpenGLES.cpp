@@ -38,6 +38,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #include "OpenGLES.h"
+#if SUPPORT_D3D11 // At present, just EGL via ANGLE on DX11, but support for others could be added.
 #include "servo_unity_log.h"
 #include <wrl/client.h> // ComPtr
 
@@ -321,3 +322,5 @@ void OpenGLES::DestroySurfaceTexture(GLuint* texID_p, const EGLSurface surface)
     glDeleteTextures(1, texID_p);
     *texID_p = 0;
 }
+
+#endif // SUPPORT_D3D11

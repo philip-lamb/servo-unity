@@ -38,6 +38,9 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
+#include "servo_unity_c.h"
+#if SUPPORT_D3D11 // At present, just EGL via ANGLE on DX11, but support for others could be added.
+
 #if defined(_WIN32)
 #  if WINDOWS_UWP
 #    include <angle_windowsstore.h>
@@ -72,3 +75,5 @@ private:
     EGLContext mEglContext;
     EGLConfig mEglConfig;
 };
+
+#endif // SUPPORT_D3D11

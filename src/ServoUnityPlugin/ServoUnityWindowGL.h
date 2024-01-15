@@ -20,14 +20,17 @@ class ServoUnityWindowGL : public ServoUnityWindow
 {
 private:
 	Size m_size;
-	uint32_t m_texID;
+	uint32_t m_texID; // For OpenGL, the GL texID and Unity's native texture pointer are one and the same.
 	int m_format;
 
 public:
-	static void initDevice();
+	static void initDevice(IUnityInterfaces* unityInterfaces);
 	static void finalizeDevice();
+
 	ServoUnityWindowGL(int uid, int uidExt, Size size);
 	~ServoUnityWindowGL() ;
+    //ServoUnityWindowGL(const ServoUnityWindowGL&) = delete;
+	//void operator=(const ServoUnityWindowGL&) = delete;
 
 	bool init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback, const std::string& userAgent) override;
     RendererAPI rendererAPI() override {return RendererAPI::OpenGLCore;}
@@ -39,6 +42,7 @@ public:
 
 	void requestUpdate(float timeDelta) override;
 	bool initRenderer(CInitOptions cio, void (*wakeup)(void), CHostCallbacks chc) override;
+	//void cleanupRenderer() override;
 };
 
 #endif // SUPPORT_OPENGL_CORE

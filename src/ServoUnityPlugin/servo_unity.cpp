@@ -227,13 +227,20 @@ void servoUnitySetResourcesPath(const char *path)
 	}
 }
 
-void servoUnityInit(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback, const char *userAgent)
+void servoUnityInit(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback, const char *userAgent, const char *pluginPathOverride)
 {
     SERVOUNITYLOGi("servoUnityInit called on thread %" PRIu64 ".\n", getThreadID());
 	m_windowCreatedCallback = windowCreatedCallback;
 	m_windowResizedCallback = windowResizedCallback;
 	m_browserEventCallback = browserEventCallback;
 	m_userAgent = userAgent && userAgent[0] ? strdup(userAgent) : nullptr;
+
+    // If a plugin path was passed in, set GStreamer plugins path to this path, and system path to empty.
+    if (pluginPathOverride) {
+        SERVOUNITYLOGi("Setting GST_PLUGIN_PATH to '%s', GST_PLUGIN_SYSTEM_PATH to ''.\n", pluginPathOverride);
+        setEnvVar("GST_PLUGIN_PATH", pluginPathOverride);
+        setEnvVar("GST_PLUGIN_SYSTEM_PATH", "");
+    }
 }
 
 void servoUnityFinalise(void)

@@ -26,7 +26,7 @@ public class ServoUnityTextureUtils : MonoBehaviour
             Debug.LogError("Error: Cannot configure video texture with invalid size: " + width + "x" + height);
             return null;
         }
-        
+
         Texture2D vt = new Texture2D(width, height, format, false);
         vt.hideFlags = HideFlags.HideAndDontSave;
         vt.filterMode = FilterMode.Bilinear;
@@ -75,7 +75,7 @@ public class ServoUnityTextureUtils : MonoBehaviour
         MeshRenderer meshRenderer = vmgo.AddComponent<MeshRenderer>();
         meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         meshRenderer.receiveShadows = false;
- 
+
         vmgo.GetComponent<Renderer>().material = vm;
 
         if (colliderType == VideoSurfaceColliderType.Mesh)
@@ -93,8 +93,6 @@ public class ServoUnityTextureUtils : MonoBehaviour
 
     public static Mesh CreateVideoMesh(float textureScaleU, float textureScaleV, float width, float height, bool flipX, bool flipY)
     {
-        // Now create a mesh appropriate for displaying the video, a mesh filter to instantiate that mesh,
-        // and a mesh renderer to render the material on the instantiated mesh.
         Mesh m = new Mesh();
         m.Clear();
         m.vertices = new Vector3[]
@@ -126,7 +124,6 @@ public class ServoUnityTextureUtils : MonoBehaviour
             3, 2, 0
         };
 
-
         return m;
     }
 
@@ -153,7 +150,7 @@ public class ServoUnityTextureUtils : MonoBehaviour
         }
         // Create the mesh
         Mesh m = ServoUnityTextureUtils.CreateVideoMesh(textureScaleU, textureScaleV, width, height, flipX, flipY);
-        
+
         // Assign the texture to the window's material
         Material vm = vmgo.GetComponent<Renderer>().material;
         vm.mainTexture = vt;
